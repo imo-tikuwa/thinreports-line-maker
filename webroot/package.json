@@ -1,0 +1,21 @@
+{
+  "name": "webroot",
+  "version": "1.0.0",
+  "description": "install jquery libs etc.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.12.0",
+    "bootstrap": "^4.4.1",
+    "fabric": "^3.5.1",
+    "jquery": "^3.4.1",
+    "jquery-wheelcolorpicker": "^3.0.9"
+  }
+}

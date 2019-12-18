@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thinreports Line Maker</title>
+    <link href="/favicon.ico" type="image/x-icon" rel="icon"/>
+    <link href="/favicon.ico" type="image/x-icon" rel="shortcut icon"/>
+    <link rel="stylesheet" type="text/css" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/node_modules/jquery-wheelcolorpicker/css/wheelcolorpicker.css" />
+    <style type="text/css">
+    .a4 {
+      width: 595px;
+      height: 842px;
+      border:1px solid #eee;
+    }
+    .color-picker-popup {
+      width: 200px;
+      height: 200px;
+    }
+    </style>
+  </head>
+  <body class="hold-transition sidebar-mini layout-fixed sidebar-collapse">
+    <div class="lock-pace"></div>
+    <div class="wrapper">
+      <!--Main layout-->
+      <div class="content-wrapper" style="margin-left:0 !important;">
+        <div class="content-header">
+          <div class="container-fluid">
+            <div class="row mb-2">
+              <div class="col-sm-12">
+                <h1 class="m-0 text-dark">Thinreports Line Maker</h1>
+              </div>
+              <div class="col-sm-12">
+                <a id="usage-collapse-trigger" data-toggle="collapse" href="#usage-collapse" role="button" aria-expanded="false" aria-controls="usage-collapse" style="font-size:80%;">[<span class="fa fa-plus" style="font-size:80%;"></span>] このプログラムについて</a>
+                <div class="collapse" id="usage-collapse">
+                  <ul style="font-size:80%;">
+                    <li>Thinreportsで使用するtlfファイルを生成するプログラムです。</li>
+                    <li>0.10.0のエディタで使用可能なtlfを生成します。</li>
+                    <li>フルHDのディスプレイでフルスクリーンでの使用を推奨。</li>
+                    <li>帳票出力テンプレートを1から作る際、エディターで1本ずつ線を引くのが大変なときに使うと少しだけ早くできるかもしれない。</li>
+                    <li>UndoはCtrl+Z、RedoはCtrl+Yでも実行できます。</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 mb-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-5">
+                        <label>Layout A4 at 72ppi (595px x 842px)</label>
+                        <div class="a4">
+                          <canvas id="layout-canvas"></canvas>
+                        </div>
+                      </div>
+                      <div class="col-md-7">
+                        <div>
+                          <div class="row">
+                            <div style="width:100px;">
+                              <div class="form-group">
+                                <div class="input select">
+                                  <label for="direction">Direction</label>
+                                  <select class="form-control form-control-sm  rounded-0 input_type" id="direction">
+                                    <option value="vertical">|（縦）</option>
+                                    <option value="width">─（横）</option>
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                            &nbsp;
+                            <div style="width:100px;">
+                              <div class="form-group">
+                                <div class="input number">
+                                  <label for="length">Length(px)</label>
+                                  <div class="input-group">
+                                    <input type="number" class="form-control form-control-sm rounded-0" id="length" value="400" />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            &nbsp;
+                            <div style="width:100px;">
+                              <div class="form-group">
+                                <div class="input number">
+                                  <label for="color">Color</label>
+                                  <div class="input-group">
+                                    <input type="text" class="form-control form-control-sm rounded-0" id="color" />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            &nbsp;
+                            <div style="width:100px;">
+                              <div class="form-group">
+                                <div class="input number">
+                                  <label for="width">Width(px)</label>
+                                  <div class="input-group">
+                                    <input type="number" class="form-control form-control-sm rounded-0" id="width" value="1" />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            &nbsp;
+                            <div style="width:100px;">
+                              <div class="form-group">
+                                <div class="input number">
+                                  <label for="position-x">PositionX(px)</label>
+                                  <div class="input-group">
+                                    <input type="number" min="0" max="595" class="form-control form-control-sm rounded-0" id="position-x" value="50" />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            &nbsp;
+                            <div style="width:100px;">
+                              <div class="form-group">
+                                <div class="input number">
+                                  <label for="position-y">PositionY(px)</label>
+                                  <div class="input-group">
+                                    <input type="number" min="0" max="842" class="form-control form-control-sm rounded-0" id="position-y" value="50" />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div style="width:100px;">
+                              <div class="form-group">
+                                <div class="input number">
+                                  <label for="interval">Interval(px)</label>
+                                  <div class="input-group">
+                                    <input type="number" min="0" max="200" class="form-control form-control-sm rounded-0" id="interval" value="0" />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            &nbsp;
+                            <div style="width:100px;">
+                              <div class="form-group">
+                                <div class="input number">
+                                  <label for="repeat">Repeat</label>
+                                  <div class="input-group">
+                                    <input type="number" min="0" max="50" class="form-control form-control-sm rounded-0" id="repeat" value="0" />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <button id="add_line" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　Add Line　</button>&nbsp;
+                            <button id="undo" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button" disabled>　Undo　</button>&nbsp;
+                            <button id="redo" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button" disabled>　Redo　</button>&nbsp;
+                            <button id="download_tlf" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　DL tlf　</button>&nbsp;
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/node_modules/jquery-wheelcolorpicker/jquery.wheelcolorpicker.min.js"></script>
+    <script src="/node_modules/fabric/dist/fabric.min.js"></script>
+    <script src="/node_modules/fabric/lib/aligning_guidelines.js"></script>
+    <script src="/node_modules/fabric/lib/centering_guidelines.js"></script>
+
+    <script type="text/javascript">
+
+    $(function() {
+
+        // カラーピッカー設定
+        $("#color").wheelColorPicker({
+          preview: true,
+          autoResize: false,
+          sliders: "vrgb",
+          cssClass: "color-picker-popup",
+        });
+        $("#color").val("000000").trigger('change');
+
+        // キャンバス作成
+        var canvas = new fabric.Canvas('layout-canvas');
+        canvas.selection = false;
+        fabric.Object.prototype.transparentCorners = false;
+        initAligningGuidelines(canvas);
+        initCenteringGuidelines(canvas);
+        canvas.setWidth(595);
+        canvas.setHeight(842);
+
+        // 線追加
+        $("#add_line").on("click", function() {
+
+          var direction = $("#direction").val(),
+          color = $("#color").val(),
+          length = $("#length").val(),
+          width = $("#width").val(),
+          position_x = $("#position-x").val(),
+          position_y = $("#position-y").val(),
+          interval = $("#interval").val(),
+          repeat = $("#repeat").val();
+
+          length = parseInt(length);
+          width = parseInt(width);
+          position_x = parseInt(position_x);
+          position_y = parseInt(position_y);
+          interval = parseInt(interval);
+          repeat = parseInt(repeat);
+
+          var x1 = position_x,
+          y1 = position_y,
+          x2 = position_x,
+          y2 = position_y;
+
+          if ('vertical' === direction) {
+            y2 += length;
+          } else {
+            x2 += length;
+          }
+
+          if (interval > 0 &&  repeat > 0) {
+            for (var i = 0; i <= repeat; i++) {
+              draw_line(x1, y1, x2, y2, color, width);
+              if ('vertical' === direction) {
+                x1 += interval;
+                x2 += interval;
+              } else {
+                y1 += interval;
+                y2 += interval;
+              }
+            }
+          } else {
+            draw_line(x1, y1, x2, y2, color, width);
+          }
+        });
+
+        // 線を書く
+        var draw_line = function(x1, y1, x2, y2, color, width) {
+          canvas.add(new fabric.Line([x1, y1, x2, y2], {
+            left: x1,
+            top: y1,
+            stroke: '#' + color,
+            strokeWidth: width,
+            selectable: false,
+            lockMovementX: true,
+            lockMovementY: true,
+            lockRotation: true,
+            hasControls: false,
+            hasBorders: true,
+            hoverCursor: "inherit"
+          }));
+          canvas.renderAll();
+          save();
+        };
+
+        // 空のtlfデータ
+        var tlf_config = {
+          version: '0.10.0',
+          items: [],
+          state: {
+            ["layout-guides"]: []
+          },
+          title: "",
+          report: {
+            ["paper-type"]: "A4",
+            orientation: "portrait",
+            margin: [
+              20,
+              20,
+              20,
+              20
+            ]
+          }
+        };
+
+        // tlfファイルダウンロード
+        $("#download_tlf").on("click", function(){
+
+          var download_filename = new Date().getTime() + '.tlf';
+          tlf_config.items = [];
+          tlf_config.title = download_filename;
+          canvas.getObjects().map(function(item, index){
+            tlf_config.items.push({
+              "id": "",
+              "type": "line",
+              "display": true,
+              "description": "",
+              "style": {
+                "border-color": item.stroke,
+                "border-width": item.strokeWidth,
+                "border-style": "solid",
+              },
+              "x1": item.x1,
+              "y1": item.y1,
+              "x2": item.x2,
+              "y2": item.y2
+            });
+          });
+
+          var tlf_json = JSON.stringify(tlf_config, null, 2);
+          var tlf_blob = window.URL.createObjectURL(new Blob([tlf_json], {type: 'text/plain'}));
+          var download_link = document.createElement("a");
+          download_link.download = download_filename;
+          download_link.href = tlf_blob;
+          download_link.dataset.downloadurl = ["text/plain", download_link.download, download_link.href].join(":");
+          download_link.click();
+        });
+
+
+        // see https://stackoverflow.com/questions/19043219/undo-redo-feature-in-fabric-js
+        var state;
+        var undo = [];
+        var redo = [];
+        function save() {
+          redo = [];
+          $('#redo').prop('disabled', true);
+          if (state) {
+            undo.push(state);
+            $('#undo').prop('disabled', false);
+          }
+          state = JSON.stringify(canvas);
+        }
+
+        function replay(playStack, saveStack, buttonsOn, buttonsOff) {
+          saveStack.push(state);
+          state = playStack.pop();
+          var on = $(buttonsOn);
+          var off = $(buttonsOff);
+          on.prop('disabled', true);
+          off.prop('disabled', true);
+          canvas.clear();
+          canvas.loadFromJSON(state, function() {
+            canvas.renderAll();
+            on.prop('disabled', false);
+            if (playStack.length) {
+              off.prop('disabled', false);
+            }
+          });
+        }
+
+        save();
+        canvas.on('object:modified', function() {
+          save();
+        });
+
+        $('#undo').on('click', function() {
+          replay(undo, redo, '#redo', this);
+        });
+        $('#redo').on('click', function() {
+          replay(redo, undo, '#undo', this);
+        });
+
+        // Ctrl+Z でundo呼び出し（undoボタンがdisabledでないときトリガーからクリックイベント実行）
+        $(window).keydown(function(e){
+          if (event.ctrlKey && e.keyCode === 90) {
+            if (!$('#undo').prop('disabled')) {
+              $('#undo').trigger('click');
+            }
+          }
+        });
+
+        // Ctrl+Y でredo呼び出し（redoボタンがdisabledでないときトリガーからクリックイベント実行）
+        $(window).keydown(function(e){
+          if (event.ctrlKey && e.keyCode === 89) {
+            if (!$('#redo').prop('disabled')) {
+              $('#redo').trigger('click');
+            }
+          }
+        });
+
+        // 「このプログラムについて」の折りたたみ
+        $("#usage-collapse").on('show.bs.collapse', function(){
+            $("#usage-collapse-trigger").find("span.fa").addClass("fa-minus").removeClass("fa-plus");
+        }).on('hide.bs.collapse', function(){
+            $("#usage-collapse-trigger").find("span.fa").addClass("fa-plus").removeClass("fa-minus");
+        });
+
+    });
+    </script>
+  </body>
+</html>
