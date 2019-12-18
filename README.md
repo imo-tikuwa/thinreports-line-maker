@@ -5,4 +5,4 @@ thinreportsで使用するtlfファイルを作成するツールです。
 ## 使い方
 1. git cloneする
 2. npm ciする
-3．phpのビルトインサーバーを起動する(start.batをダブルクリック)
+3. phpのビルトインサーバーを起動する(start.batをダブルクリック)
