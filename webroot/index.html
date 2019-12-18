@@ -288,7 +288,8 @@
           tlf_config.items = [];
           tlf_config.title = download_filename;
           canvas.getObjects().map(function(item, index){
-            tlf_config.items.push({
+
+            var push_data = {
               "id": "",
               "type": "line",
               "display": true,
@@ -297,12 +298,24 @@
                 "border-color": item.stroke,
                 "border-width": item.strokeWidth,
                 "border-style": "solid",
-              },
-              "x1": item.x1,
-              "y1": item.y1,
-              "x2": item.x2,
-              "y2": item.y2
-            });
+              }
+            };
+
+            // undo/redoを行った前に存在したオブジェクトとadd_lineで追加したオブジェクトの内容が違うのでここで分岐して結果として同じものを出力させる
+            if (item.version != undefined) {
+              // undo/redoを行う前に存在したオブジェクトのパターン
+              push_data['x1'] = item.left;
+              push_data['y1'] = item.top;
+              push_data['x2'] = item.left + item.width;
+              push_data['y2'] = item.top + item.height;
+            } else {
+              // add_lineで追加したオブジェクトのパターン
+              push_data['x1'] = item.x1;
+              push_data['y1'] = item.y1;
+              push_data['x2'] = item.x2;
+              push_data['y2'] = item.y2;
+            }
+            tlf_config.items.push(push_data);
           });
 
           var tlf_json = JSON.stringify(tlf_config, null, 2);
