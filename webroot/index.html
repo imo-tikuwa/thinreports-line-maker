@@ -153,7 +153,9 @@
                             <button id="add_line" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　Add Line　</button>&nbsp;
                             <button id="undo" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button" disabled>　Undo　</button>&nbsp;
                             <button id="redo" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button" disabled>　Redo　</button>&nbsp;
-                            <button id="download_tlf" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　DL tlf　</button>&nbsp;
+                            <button id="load_tlf" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　Load tlf　</button>&nbsp;
+                            <input type="file" name="load_tlf_file" id="load_tlf_file" style="display:none;"/>
+                            <button id="download_tlf" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　Download tlf　</button>&nbsp;
                           </div>
                         </div>
                       </div>
@@ -388,6 +390,54 @@
             }
           }
         });
+
+        // Ctrl+S でダウンロード呼び出し
+        $(window).keydown(function(e){
+          if (event.ctrlKey && e.keyCode === 83) {
+            $('#download_tlf').trigger('click');
+            e.preventDefault();
+          }
+        });
+
+        // tlfファイルロード
+        if (window.File && window.FileReader && window.FileList && window.Blob) {
+          $("#load_tlf").on("click", function(){
+            $("#load_tlf_file").trigger('click');
+          });
+          $("#load_tlf_file").on("change", function(e){
+            if (!window.confirm("編集中のファイルは失われます。よろしいですか？")) {
+              return false;
+            }
+            var tlf_file = e.target.files[0];
+            var tlf_file_name = tlf_file.name.toLowerCase();
+            if (!tlf_file_name.endsWith('.tlf')) {
+              alert("tlfファイルを選択してください。");
+              return false;
+            }
+
+            var reader = new FileReader();
+            reader.readAsText(tlf_file);
+            reader.addEventListener('load', function() {
+              var tlf_file_data = JSON.parse(reader.result);
+              canvas.clear();
+              for (var i = 0; i < tlf_file_data.items.length; i++) {
+                var item = tlf_file_data.items[i];
+                if (item.type === 'line') {
+                  draw_line(item.x1, item.y1, item.x2, item.y2, item.style['border-color'].replace('#', ''), item.style['border-width']);
+                }
+              }
+
+              state = null;
+              undo = [];
+              redo = [];
+              save();
+              $('#undo').prop('disabled', true);
+            });
+
+          });
+        } else {
+          $("#load_tlf").hide();
+        }
 
         // 「このプログラムについて」の折りたたみ
         $("#usage-collapse").on('show.bs.collapse', function(){
