@@ -19,147 +19,106 @@
       width: 200px;
       height: 200px;
     }
+    .canvas-div {
+      margin-right:10px;
+    }
+    .property-box {
+      width:100px;
+      margin-right:10px;
+      float:left;
+    }
     </style>
   </head>
-  <body class="hold-transition sidebar-mini layout-fixed sidebar-collapse">
-    <div class="lock-pace"></div>
+  <body>
     <div class="wrapper">
-      <!--Main layout-->
-      <div class="content-wrapper" style="margin-left:0 !important;">
-        <div class="content-header">
-          <div class="container-fluid">
-            <div class="row mb-2">
-              <div class="col-sm-12">
-                <h1 class="m-0 text-dark">Thinreports Line Maker</h1>
-              </div>
-              <div class="col-sm-12">
-                <a id="usage-collapse-trigger" data-toggle="collapse" href="#usage-collapse" role="button" aria-expanded="false" aria-controls="usage-collapse" style="font-size:80%;">[<span class="fa fa-plus" style="font-size:80%;"></span>] このプログラムについて</a>
-                <div class="collapse" id="usage-collapse">
-                  <ul style="font-size:80%;">
-                    <li>Thinreportsで使用するtlfファイルを生成するプログラムです。</li>
-                    <li>0.10.0のエディタで使用可能なtlfを生成します。</li>
-                    <li>フルHDのディスプレイでフルスクリーンでの使用を推奨。</li>
-                    <li>帳票出力テンプレートを1から作る際、エディターで1本ずつ線を引くのが大変なときに使うと少しだけ早くできるかもしれない。</li>
-                    <li>UndoはCtrl+Z、RedoはCtrl+Yでも実行できます。</li>
-                  </ul>
+      <div class="col-md-12 mb-12 pt-3 pb-3">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="canvas-div">
+                <label>Layout A4 at 72ppi (595px x 842px)</label>
+                <div class="a4">
+                  <canvas id="layout-canvas"></canvas>
                 </div>
               </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12 mb-12">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="row">
-                      <div class="col-md-5">
-                        <label>Layout A4 at 72ppi (595px x 842px)</label>
-                        <div class="a4">
-                          <canvas id="layout-canvas"></canvas>
-                        </div>
-                      </div>
-                      <div class="col-md-7">
-                        <div>
-                          <div class="row">
-                            <div style="width:100px;">
-                              <div class="form-group">
-                                <div class="input select">
-                                  <label for="direction">Direction</label>
-                                  <select class="form-control form-control-sm  rounded-0 input_type" id="direction">
-                                    <option value="vertical">|（縦）</option>
-                                    <option value="width">─（横）</option>
-                                  </select>
-                                </div>
-                              </div>
-                            </div>
-                            &nbsp;
-                            <div style="width:100px;">
-                              <div class="form-group">
-                                <div class="input number">
-                                  <label for="length">Length(px)</label>
-                                  <div class="input-group">
-                                    <input type="number" class="form-control form-control-sm rounded-0" id="length" value="400" />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            &nbsp;
-                            <div style="width:100px;">
-                              <div class="form-group">
-                                <div class="input number">
-                                  <label for="color">Color</label>
-                                  <div class="input-group">
-                                    <input type="text" class="form-control form-control-sm rounded-0" id="color" />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            &nbsp;
-                            <div style="width:100px;">
-                              <div class="form-group">
-                                <div class="input number">
-                                  <label for="width">Width(px)</label>
-                                  <div class="input-group">
-                                    <input type="number" class="form-control form-control-sm rounded-0" id="width" value="1" />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            &nbsp;
-                            <div style="width:100px;">
-                              <div class="form-group">
-                                <div class="input number">
-                                  <label for="position-x">PositionX(px)</label>
-                                  <div class="input-group">
-                                    <input type="number" min="0" max="595" class="form-control form-control-sm rounded-0" id="position-x" value="50" />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            &nbsp;
-                            <div style="width:100px;">
-                              <div class="form-group">
-                                <div class="input number">
-                                  <label for="position-y">PositionY(px)</label>
-                                  <div class="input-group">
-                                    <input type="number" min="0" max="842" class="form-control form-control-sm rounded-0" id="position-y" value="50" />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="row">
-                            <div style="width:100px;">
-                              <div class="form-group">
-                                <div class="input number">
-                                  <label for="interval">Interval(px)</label>
-                                  <div class="input-group">
-                                    <input type="number" min="0" max="200" class="form-control form-control-sm rounded-0" id="interval" value="0" />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            &nbsp;
-                            <div style="width:100px;">
-                              <div class="form-group">
-                                <div class="input number">
-                                  <label for="repeat">Repeat</label>
-                                  <div class="input-group">
-                                    <input type="number" min="0" max="50" class="form-control form-control-sm rounded-0" id="repeat" value="0" />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="row">
-                            <button id="add_line" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　Add Line　</button>&nbsp;
-                            <button id="undo" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button" disabled>　Undo　</button>&nbsp;
-                            <button id="redo" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button" disabled>　Redo　</button>&nbsp;
-                            <button id="load_tlf" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　Load tlf　</button>&nbsp;
-                            <input type="file" name="load_tlf_file" id="load_tlf_file" style="display:none;"/>
-                            <button id="download_tlf" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　Download tlf　</button>&nbsp;
-                          </div>
-                        </div>
+              <div class="main-div">
+                <div>
+                  <h1 class="m-0 text-dark">Thinreports Line Maker</h1>
+                  <a id="usage-collapse-trigger" data-toggle="collapse" href="#usage-collapse" role="button" aria-expanded="false" aria-controls="usage-collapse" style="font-size:80%;">[<span class="fa fa-plus" style="font-size:80%;"></span>] このプログラムについて</a>
+                  <div class="collapse" id="usage-collapse">
+                    <ul style="font-size:80%;">
+                      <li>Thinreportsで使用するtlfファイルを生成するプログラムです。</li>
+                      <li>0.10.0のエディタで使用可能なtlfを生成します。</li>
+                      <li>フルHDのディスプレイでフルスクリーンでの使用を推奨。</li>
+                      <li>帳票出力テンプレートを1から作る際、エディターで1本ずつ線を引くのが大変なときに使うと少しだけ早くできるかもしれない。</li>
+                      <li>UndoはCtrl+Z、RedoはCtrl+Yでも実行できます。</li>
+                    </ul>
+                  </div>
+
+                  <div class="clearfix">
+                    <div class="property-box">
+                      <label for="direction">Direction</label>
+                      <select class="form-control form-control-sm  rounded-0 input_type" id="direction">
+                        <option value="vertical">|（縦）</option>
+                        <option value="width">─（横）</option>
+                      </select>
+                    </div>
+                    <div class="property-box">
+                      <label for="length">Length(px)</label>
+                      <div class="input-group">
+                        <input type="number" class="form-control form-control-sm rounded-0" id="length" value="400" />
                       </div>
                     </div>
+                    <div class="property-box">
+                      <label for="color">Color</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control form-control-sm rounded-0" id="color" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="clearfix">
+                    <div class="property-box">
+                      <label for="width">Width(px)</label>
+                      <div class="input-group">
+                        <input type="number" class="form-control form-control-sm rounded-0" id="width" value="1" />
+                      </div>
+                    </div>
+                    <div class="property-box">
+                      <label for="position-x">PositionX(px)</label>
+                      <div class="input-group">
+                        <input type="number" min="0" max="595" class="form-control form-control-sm rounded-0" id="position-x" value="50" />
+                      </div>
+                    </div>
+                    <div class="property-box">
+                      <label for="position-y">PositionY(px)</label>
+                      <div class="input-group">
+                        <input type="number" min="0" max="842" class="form-control form-control-sm rounded-0" id="position-y" value="50" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="clearfix">
+                    <div class="property-box">
+                      <label for="interval">Interval(px)</label>
+                      <div class="input-group">
+                        <input type="number" min="0" max="200" class="form-control form-control-sm rounded-0" id="interval" value="0" />
+                      </div>
+                    </div>
+                    <div class="property-box">
+                      <label for="repeat">Repeat</label>
+                      <div class="input-group">
+                        <input type="number" min="0" max="50" class="form-control form-control-sm rounded-0" id="repeat" value="0" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="clearfix mt-4">
+                    <button id="add_line" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　Add Line　</button>
+                    <button id="undo" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button" disabled>　Undo　</button>
+                    <button id="redo" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button" disabled>　Redo　</button>
+                  </div>
+                  <div class="clearfix mt-2">
+                    <button id="load_tlf" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　Load tlf　</button>
+                    <input type="file" name="load_tlf_file" id="load_tlf_file" style="display:none;"/>
+                    <button id="download_tlf" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　Download tlf　</button>
                   </div>
                 </div>
               </div>
