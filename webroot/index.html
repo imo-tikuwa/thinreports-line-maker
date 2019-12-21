@@ -9,25 +9,7 @@
     <link rel="stylesheet" type="text/css" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css"/>
     <link rel="stylesheet" type="text/css" href="/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="/node_modules/jquery-wheelcolorpicker/css/wheelcolorpicker.css" />
-    <style type="text/css">
-    .a4 {
-      width: 595px;
-      height: 842px;
-      border:1px solid #eee;
-    }
-    .color-picker-popup {
-      width: 200px;
-      height: 200px;
-    }
-    .canvas-div {
-      margin-right:10px;
-    }
-    .property-box {
-      width:100px;
-      margin-right:10px;
-      float:left;
-    }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
   </head>
   <body>
     <div class="wrapper">
@@ -36,8 +18,8 @@
           <div class="card-body">
             <div class="row">
               <div class="canvas-div">
-                <label>Layout A4 at 72ppi (595px x 842px)</label>
-                <div class="a4">
+                <label>Layout <span class="disp-paper-type">A4</span> at 72ppi (<span class="disp-width">595</span>px x <span class="disp-height">842</span>px, <span class="disp-orientation">portrait</span>)</label>
+                <div class="canvas-wrapper">
                   <canvas id="layout-canvas"></canvas>
                 </div>
               </div>
@@ -119,6 +101,17 @@
                     <button id="load_tlf" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　Load tlf　</button>
                     <input type="file" name="load_tlf_file" id="load_tlf_file" style="display:none;"/>
                     <button id="download_tlf" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　Download tlf　</button>
+                  </div>
+                  <div class="clearfix mt-4">
+                    <button class="btn btn-flat btn-sm btn-outline-secondary rounded-0 canvas-size default-canvas-size" type="button" data-canvas-size="a4">　A4　</button>
+                    <button class="btn btn-flat btn-sm btn-outline-secondary rounded-0 canvas-size" type="button" data-canvas-size="a3">　A3　</button>
+                  </div>
+                  <div class="clearfix mt-2">
+                    <button class="btn btn-flat btn-sm btn-outline-secondary rounded-0 canvas-size" type="button" data-canvas-size="b5">　B5　</button>
+                    <button class="btn btn-flat btn-sm btn-outline-secondary rounded-0 canvas-size" type="button" data-canvas-size="b4">　B4　</button>
+                  </div>
+                  <div class="clearfix mt-4">
+                    <button class="btn btn-flat btn-sm btn-outline-secondary rounded-0 toggle-canvas-orientation" type="button" data-canvas-size="a4">　Toggle XY　</button>
                   </div>
                 </div>
               </div>
@@ -223,7 +216,9 @@
         };
 
         // 空のtlfデータ
-        var tlf_config = {
+        var current_tlf_paper_type = "A4",
+        current_tlf_orientation = "portrait",
+        tlf_config = {
           version: '0.10.0',
           items: [],
           state: {
@@ -231,8 +226,8 @@
           },
           title: "",
           report: {
-            ["paper-type"]: "A4",
-            orientation: "portrait",
+            ["paper-type"]: current_tlf_paper_type,
+            orientation: current_tlf_orientation,
             margin: [
               20,
               20,
@@ -242,12 +237,15 @@
           }
         };
 
+
         // tlfファイルダウンロード
         $("#download_tlf").on("click", function(){
 
-          var download_filename = new Date().getTime() + '.tlf';
+          var download_filename = new Date().getTime();
           tlf_config.items = [];
           tlf_config.title = download_filename;
+          tlf_config.report.orientation = current_tlf_orientation;
+          tlf_config.report['paper-type'] = current_tlf_paper_type;
           canvas.getObjects().map(function(item, index){
 
             var push_data = {
@@ -282,7 +280,7 @@
           var tlf_json = JSON.stringify(tlf_config, null, 2);
           var tlf_blob = window.URL.createObjectURL(new Blob([tlf_json], {type: 'text/plain'}));
           var download_link = document.createElement("a");
-          download_link.download = download_filename;
+          download_link.download = download_filename + '.tlf';
           download_link.href = tlf_blob;
           download_link.dataset.downloadurl = ["text/plain", download_link.download, download_link.href].join(":");
           download_link.click();
@@ -398,13 +396,68 @@
           $("#load_tlf").hide();
         }
 
+        // キャンバスサイズのデータ
+        var canvas_size_data = {
+          a4: {
+            width: 595,
+            height: 842,
+            tlf_type: "A4"
+          },
+          a3: {
+            width: 842,
+            height: 1191,
+            tlf_type: "A3"
+          },
+          b5: {
+            width: 516,
+            height: 729,
+            tlf_type: "B5_ISO"
+          },
+          b4: {
+            width: 729,
+            height: 1032,
+            tlf_type: "B4_ISO"
+          }
+        };
+
+        // キャンバスサイズの変更処理
+        $('.canvas-size').on('click', function() {
+          var change_size = canvas_size_data[$(this).data('canvas-size')];
+          if (current_tlf_orientation === "portrait") {
+            canvas.setWidth(change_size.width);
+            canvas.setHeight(change_size.height);
+          } else {
+            canvas.setWidth(change_size.height);
+            canvas.setHeight(change_size.width);
+          }
+          current_tlf_paper_type = change_size.tlf_type;
+          update_disp();
+        });
+        $(".default-canvas-size").trigger('click');
+
+        // キャンバスの縦横入れ替え処理
+        $(".toggle-canvas-orientation").on('click', function() {
+          current_tlf_orientation = (current_tlf_orientation === "portrait") ? "landscape" : "portrait";
+          let tmp_canvas_width = canvas.getWidth(), tmp_canvas_height = canvas.getHeight();
+          canvas.setWidth(tmp_canvas_height);
+          canvas.setHeight(tmp_canvas_width);
+          update_disp();
+        });
+
+        // ラベル表示更新
+        function update_disp() {
+          $(".disp-paper-type").text(current_tlf_paper_type);
+          $(".disp-width").text(canvas.getWidth());
+          $(".disp-height").text(canvas.getHeight());
+          $(".disp-orientation").text(current_tlf_orientation);
+        }
+
         // 「このプログラムについて」の折りたたみ
         $("#usage-collapse").on('show.bs.collapse', function(){
             $("#usage-collapse-trigger").find("span.fa").addClass("fa-minus").removeClass("fa-plus");
         }).on('hide.bs.collapse', function(){
             $("#usage-collapse-trigger").find("span.fa").addClass("fa-plus").removeClass("fa-minus");
         });
-
     });
     </script>
   </body>

@@ -1,0 +1,15 @@
+.canvas-wrapper {
+  border:1px solid rgba(0,0,0,.125);
+}
+.color-picker-popup {
+  width: 200px;
+  height: 200px;
+}
+.canvas-div {
+  margin-right:10px;
+}
+.property-box {
+  width:100px;
+  margin-right:10px;
+  float:left;
+}
