@@ -83,9 +83,10 @@ $(function() {
       save();
     };
 
-    // 空のtlfデータ
+    // flf関連の変数とか
     var current_tlf_paper_type = "A4",
     current_tlf_orientation = "portrait",
+    current_tlf_size_is_free = false,
     tlf_config = {
       version: '0.10.0',
       items: [],
@@ -114,6 +115,18 @@ $(function() {
       tlf_config.title = download_filename;
       tlf_config.report.orientation = current_tlf_orientation;
       tlf_config.report['paper-type'] = current_tlf_paper_type;
+      if (current_tlf_size_is_free) {
+        if (current_tlf_orientation === "portrait") {
+          tlf_config.report.width = parseInt(canvas.getWidth());
+          tlf_config.report.height = parseInt(canvas.getHeight());
+        } else {
+          tlf_config.report.width = parseInt(canvas.getHeight());
+          tlf_config.report.height = parseInt(canvas.getWidth());
+        }
+      } else {
+        delete tlf_config.report.width;
+        delete tlf_config.report.height;
+      }
       canvas.getObjects().map(function(item, index){
 
         var push_data = {
@@ -299,9 +312,29 @@ $(function() {
         canvas.setHeight(change_size.width);
       }
       current_tlf_paper_type = change_size.tlf_type;
+      current_tlf_size_is_free = false;
       update_disp();
     });
     $(".default-canvas-size").trigger('click');
+
+    // キャンバスサイズ（フリーサイズ）の処理
+    $(".free-canvas-size").on("click", function(){
+      let free_width = window.prompt("新しい幅を入力", canvas.getWidth());
+      if (free_width == null || !isFinite(free_width)) {
+        alert("数値を入力してください。");
+        return false;
+      }
+      let free_height = window.prompt("新しい高さを入力", canvas.getHeight());
+      if (free_height == null || !isFinite(free_height)) {
+        alert("数値を入力してください。");
+        return false;
+      }
+      canvas.setWidth(free_width);
+      canvas.setHeight(free_height);
+      current_tlf_paper_type = "user";
+      current_tlf_size_is_free = true;
+      update_disp();
+    });
 
     // キャンバスの縦横入れ替え処理
     $(".toggle-canvas-orientation").on('click', function() {
