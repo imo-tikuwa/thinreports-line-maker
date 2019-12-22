@@ -6,10 +6,10 @@
     <title>Thinreports Line Maker</title>
     <link href="/favicon.ico" type="image/x-icon" rel="icon"/>
     <link href="/favicon.ico" type="image/x-icon" rel="shortcut icon"/>
-    <link rel="stylesheet" type="text/css" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css"/>
-    <link rel="stylesheet" type="text/css" href="/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" type="text/css" href="/node_modules/jquery-wheelcolorpicker/css/wheelcolorpicker.css" />
-    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="./node_modules/@fortawesome/fontawesome-free/css/all.min.css"/>
+    <link rel="stylesheet" type="text/css" href="./node_modules/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="./node_modules/jquery-wheelcolorpicker/css/wheelcolorpicker.css" />
+    <link rel="stylesheet" type="text/css" href="./css/style.css" />
   </head>
   <body>
     <div class="wrapper">
@@ -34,13 +34,15 @@
                       <li>フルHDのディスプレイでフルスクリーンでの使用を推奨。</li>
                       <li>帳票出力テンプレートを1から作る際、エディターで1本ずつ線を引くのが大変なときに使うと少しだけ早くできるかもしれない。</li>
                       <li>UndoはCtrl+Z、RedoはCtrl+Yでも実行できます。</li>
+                      <li>Download tlfでtlfファイルをダウンロードします。Ctrl+Sでも実行できます。</li>
+                      <li>キャンバス内でダブルクリックすることでPositionX,PositionYに現在のポインターの位置をセットできます。</li>
                     </ul>
                   </div>
 
                   <div class="clearfix">
                     <div class="property-box">
                       <label for="direction">Direction</label>
-                      <select class="form-control form-control-sm  rounded-0 input_type" id="direction">
+                      <select class="form-control form-control-sm  rounded-0 input_type" id="direction" data-toggle="tooltip" title="線の方向です">
                         <option value="vertical">|（縦）</option>
                         <option value="width">─（横）</option>
                       </select>
@@ -48,13 +50,13 @@
                     <div class="property-box">
                       <label for="length">Length(px)</label>
                       <div class="input-group">
-                        <input type="number" class="form-control form-control-sm rounded-0" id="length" value="400" />
+                        <input type="number" class="form-control form-control-sm rounded-0" id="length" value="400" data-toggle="tooltip" title="線の長さです" />
                       </div>
                     </div>
                     <div class="property-box">
                       <label for="color">Color</label>
                       <div class="input-group">
-                        <input type="text" class="form-control form-control-sm rounded-0" id="color" />
+                        <input type="text" class="form-control form-control-sm rounded-0" id="color" data-toggle="tooltip" title="線の色です" />
                       </div>
                     </div>
                   </div>
@@ -62,19 +64,19 @@
                     <div class="property-box">
                       <label for="width">Width(px)</label>
                       <div class="input-group">
-                        <input type="number" class="form-control form-control-sm rounded-0" id="width" value="1" />
+                        <input type="number" class="form-control form-control-sm rounded-0" id="width" value="1" data-toggle="tooltip" title="線の太さです" />
                       </div>
                     </div>
                     <div class="property-box">
                       <label for="position-x">PositionX(px)</label>
                       <div class="input-group">
-                        <input type="number" min="0" max="595" class="form-control form-control-sm rounded-0" id="position-x" value="50" />
+                        <input type="number" min="0" max="595" class="form-control form-control-sm rounded-0" id="position-x" value="50" data-toggle="tooltip" title="線を引き始めるX座標です" />
                       </div>
                     </div>
                     <div class="property-box">
                       <label for="position-y">PositionY(px)</label>
                       <div class="input-group">
-                        <input type="number" min="0" max="842" class="form-control form-control-sm rounded-0" id="position-y" value="50" />
+                        <input type="number" min="0" max="842" class="form-control form-control-sm rounded-0" id="position-y" value="50" data-toggle="tooltip" title="線を引き始めるY座標です" />
                       </div>
                     </div>
                   </div>
@@ -82,13 +84,13 @@
                     <div class="property-box">
                       <label for="interval">Interval(px)</label>
                       <div class="input-group">
-                        <input type="number" min="0" max="200" class="form-control form-control-sm rounded-0" id="interval" value="0" />
+                        <input type="number" min="0" max="200" class="form-control form-control-sm rounded-0" id="interval" value="0" data-toggle="tooltip" title="指定した値で等間隔の線を引きます" />
                       </div>
                     </div>
                     <div class="property-box">
                       <label for="repeat">Repeat</label>
                       <div class="input-group">
-                        <input type="number" min="0" max="50" class="form-control form-control-sm rounded-0" id="repeat" value="0" />
+                        <input type="number" min="0" max="50" class="form-control form-control-sm rounded-0" id="repeat" value="0" data-toggle="tooltip" title="等間隔の線を何本引くかを入力してください" />
                       </div>
                     </div>
                   </div>
@@ -122,12 +124,12 @@
       </div>
     </div>
 
-    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/node_modules/jquery-wheelcolorpicker/jquery.wheelcolorpicker.min.js"></script>
-    <script src="/node_modules/fabric/dist/fabric.min.js"></script>
-    <script src="/node_modules/fabric/lib/aligning_guidelines.js"></script>
-    <script src="/node_modules/fabric/lib/centering_guidelines.js"></script>
-    <script src="/js/script.js"></script>
+    <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./node_modules/jquery-wheelcolorpicker/jquery.wheelcolorpicker.min.js"></script>
+    <script src="./node_modules/fabric/dist/fabric.min.js"></script>
+    <script src="./node_modules/fabric/lib/aligning_guidelines.js"></script>
+    <script src="./node_modules/fabric/lib/centering_guidelines.js"></script>
+    <script src="./js/script.js"></script>
   </body>
 </html>

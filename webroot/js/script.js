@@ -1,5 +1,8 @@
 $(function() {
 
+    // bootstrap4 ツールチップ設定
+    $('[data-toggle="tooltip"]').tooltip();
+
     // カラーピッカー設定
     $("#color").wheelColorPicker({
       preview: true,
@@ -352,6 +355,25 @@ $(function() {
       $(".disp-height").text(canvas.getHeight());
       $(".disp-orientation").text(current_tlf_orientation);
     }
+
+    // キャンバス上でクロスヘアカーソルを表示させる、ダブルクリックした位置をPositionX,Yにセットする
+    canvas.isDrawingMode = true;
+    canvas.freeDrawingCursor = 'crosshair';
+    canvas.on('mouse:down:before', function(e){
+      canvas.isDrawingMode = false;
+    });
+    canvas.on('mouse:down', function(e){
+      canvas.isDrawingMode = true;
+    });
+    canvas.on('mouse:dblclick', function(e){
+      $("#position-x").val(e.pointer.x);
+      $("#position-y").val(e.pointer.y);
+    });
+
+    // マウスオーバーの位置をとりあえずコンソールログに出しとく
+    canvas.on('mouse:move', function(e){
+      console.log("x:" + e.pointer.x, "y:" + e.pointer.y);
+    });
 
     // 「このプログラムについて」の折りたたみ
     $("#usage-collapse").on('show.bs.collapse', function(){
