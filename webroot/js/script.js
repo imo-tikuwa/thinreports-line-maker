@@ -4,13 +4,15 @@ $(function() {
     $('[data-toggle="tooltip"]').tooltip();
 
     // カラーピッカー設定
-    $("#color").wheelColorPicker({
+    $("#color, #rect-line-color, #rect-fill-color").wheelColorPicker({
       preview: true,
       autoResize: false,
       sliders: "vrgb",
       cssClass: "color-picker-popup",
     });
     $("#color").val("000000").trigger('change');
+    $("#rect-line-color").val("000000").trigger('change');
+    $("#rect-fill-color").val("ffffff").trigger('change');
 
     // キャンバス作成
     var canvas = new fabric.Canvas('layout-canvas');
@@ -86,6 +88,49 @@ $(function() {
       save();
     };
 
+    // 四角形追加
+    $("#add_rect").on("click", function() {
+
+      var position_x = $("#rect-position-x").val(),
+      position_y = $("#rect-position-y").val(),
+      line_color = $("#rect-line-color").val(),
+      fill_color = $("#rect-fill-color").val(),
+      width = $("#rect-width").val(),
+      height = $("#rect-height").val(),
+      line_width = $("#rect-line-width").val();
+
+      position_x = parseInt(position_x);
+      position_y = parseInt(position_y);
+      width = parseInt(width);
+      height = parseInt(height);
+      line_width = parseInt(line_width);
+
+      draw_rect(position_x, position_y, width, height, line_width, line_color, fill_color);
+    });
+
+    // 四角形を書く
+    var draw_rect = function(x, y, w, h, line_width, line_color, fill_color) {
+      let fill_color_prop = (fill_color != "") ? '#' + fill_color : "";
+      canvas.add(new fabric.Rect({
+        left: x,
+        top: y,
+        width: w,
+        height: h,
+        fill: fill_color_prop,
+        stroke: '#' + line_color,
+        strokeWidth: line_width,
+        selectable: false,
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        hasControls: false,
+        hasBorders: true,
+        hoverCursor: "inherit"
+      }));
+      canvas.renderAll();
+      save();
+    };
+
     // flf関連の変数とか
     var current_tlf_paper_type = "A4",
     current_tlf_orientation = "portrait",
@@ -132,32 +177,60 @@ $(function() {
       }
       canvas.getObjects().map(function(item, index){
 
-        var push_data = {
-          "id": "",
-          "type": "line",
-          "display": true,
-          "description": "",
-          "style": {
-            "border-color": item.stroke,
-            "border-width": item.strokeWidth,
-            "border-style": "solid",
-          }
-        };
+        var push_data = null;
 
-        // undo/redoを行った前に存在したオブジェクトとadd_lineで追加したオブジェクトの内容が違うのでここで分岐して結果として同じものを出力させる
-        if (item.version != undefined) {
-          // undo/redoを行う前に存在したオブジェクトのパターン
-          push_data['x1'] = item.left;
-          push_data['y1'] = item.top;
-          push_data['x2'] = item.left + item.width;
-          push_data['y2'] = item.top + item.height;
+        // 線と四角形で条件分岐する
+        if (item instanceof fabric.Rect) {
+
+          let fill_color_prop = ("" == item.fill) ? "none" : item.fill;
+          push_data = {
+            "id": "",
+            "type": "rect",
+            "display": true,
+            "description": "",
+            "x": item.left,
+            "y": item.top,
+            "width": item.width,
+            "height": item.height,
+            "style": {
+              "border-color": item.stroke,
+              "border-width": item.strokeWidth,
+              "border-style": "solid",
+              "fill-color": fill_color_prop
+            },
+            "border-radius": 0
+          };
+
         } else {
-          // add_lineで追加したオブジェクトのパターン
-          push_data['x1'] = item.x1;
-          push_data['y1'] = item.y1;
-          push_data['x2'] = item.x2;
-          push_data['y2'] = item.y2;
+
+          push_data = {
+            "id": "",
+            "type": "line",
+            "display": true,
+            "description": "",
+            "style": {
+              "border-color": item.stroke,
+              "border-width": item.strokeWidth,
+              "border-style": "solid",
+            }
+          };
+
+          // undo/redoを行った前に存在したオブジェクトとadd_lineで追加したオブジェクトの内容が違うのでここで分岐して結果として同じものを出力させる
+          if (item.version != undefined) {
+            // undo/redoを行う前に存在したオブジェクトのパターン
+            push_data['x1'] = item.left;
+            push_data['y1'] = item.top;
+            push_data['x2'] = item.left + item.width;
+            push_data['y2'] = item.top + item.height;
+          } else {
+            // add_lineで追加したオブジェクトのパターン
+            push_data['x1'] = item.x1;
+            push_data['y1'] = item.y1;
+            push_data['x2'] = item.x2;
+            push_data['y2'] = item.y2;
+          }
         }
+
         tlf_config.items.push(push_data);
       });
 
@@ -262,6 +335,9 @@ $(function() {
             var item = tlf_file_data.items[i];
             if (item.type === 'line') {
               draw_line(item.x1, item.y1, item.x2, item.y2, item.style['border-color'].replace('#', ''), item.style['border-width']);
+            } else if (item.type === 'rect') {
+              let fill_color_prop = (item.style['fill-color'] === "none") ? "" : item.style['fill-color'].replace('#', '');
+              draw_rect(item.x, item.y, item.width, item.height, item.style['border-width'], item.style['border-color'].replace('#', ''), fill_color_prop);
             }
           }
 
@@ -365,6 +441,8 @@ $(function() {
     canvas.on('mouse:dblclick', function(e){
       $("#position-x").val(e.pointer.x);
       $("#position-y").val(e.pointer.y);
+      $("#rect-position-x").val(e.pointer.x);
+      $("#rect-position-y").val(e.pointer.y);
     });
 
     // マウスオーバーの位置をとりあえずコンソールログに出しとく

@@ -9,10 +9,14 @@
   margin-right:10px;
 }
 .main-div {
-  max-width: 430px;
+  max-width: 450px;
 }
 .property-box {
   width:100px;
   margin-right:10px;
   float:left;
+}
+
+hr {
+	margin-bottom:0.5rem;
 }
