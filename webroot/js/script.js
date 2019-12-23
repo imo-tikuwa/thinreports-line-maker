@@ -214,27 +214,24 @@ $(function() {
       replay(redo, undo, '#undo', this);
     });
 
-    // Ctrl+Z でundo呼び出し（undoボタンがdisabledでないときトリガーからクリックイベント実行）
+
     $(window).keydown(function(e){
+      // Ctrl+Z でundo呼び出し（undoボタンがdisabledでないときトリガーからクリックイベント実行）
       if (event.ctrlKey && e.keyCode === 90) {
         if (!$('#undo').prop('disabled')) {
           $('#undo').trigger('click');
         }
+        e.preventDefault();
       }
-    });
-
-    // Ctrl+Y でredo呼び出し（redoボタンがdisabledでないときトリガーからクリックイベント実行）
-    $(window).keydown(function(e){
-      if (event.ctrlKey && e.keyCode === 89) {
+      // Ctrl+Y でredo呼び出し（redoボタンがdisabledでないときトリガーからクリックイベント実行）
+      else if (event.ctrlKey && e.keyCode === 89) {
         if (!$('#redo').prop('disabled')) {
           $('#redo').trigger('click');
         }
+        e.preventDefault();
       }
-    });
-
-    // Ctrl+S でダウンロード呼び出し
-    $(window).keydown(function(e){
-      if (event.ctrlKey && e.keyCode === 83) {
+      // Ctrl+S でダウンロード呼び出し
+      else if (event.ctrlKey && e.keyCode === 83) {
         $('#download_tlf').trigger('click');
         e.preventDefault();
       }
