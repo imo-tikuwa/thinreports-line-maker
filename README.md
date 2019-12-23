@@ -13,3 +13,9 @@ thinreportsで使用するtlfファイルを作成するツールです。
 [1576896820381.tlf](https://github.com/imo-tikuwa/thinreports-line-maker/files/3990974/1576896820381.txt)  
 ※ダウンロード後、ファイルの拡張子をtxtからtlfに変える必要あり（tlfファイルをgithubにアップできなかった）  
 [公式のエディター](http://www.thinreports.org/features/editor/)や当ツールで読み込むことができます。
+
+## デモ
+[thinreports-line-maker(外部リンク)](https://etc.imo-tikuwa.com/thinreports-line-maker/)
+
+## その他
+非公式のツールなので間違えて公式に問い合わせたりしないよう注意をお願いいたします。
