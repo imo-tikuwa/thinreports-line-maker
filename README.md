@@ -1,7 +1,7 @@
 # thinreports-line-makerについて
 thinreportsで使用するtlfファイルを作成するツールです。  
 バージョン0.10.0のエディターで使用することができます。  
-![thinreports-line-maker](https://user-images.githubusercontent.com/48991931/71301937-e20b5600-23e8-11ea-99b0-91ebffaef4cb.png)
+![thinreports_line_maker_02](https://user-images.githubusercontent.com/48991931/71364806-8e635d00-25e0-11ea-86c7-356cb57eae1a.png)
 
 ## 使い方
 1. git cloneする
