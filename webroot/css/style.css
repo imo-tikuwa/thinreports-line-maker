@@ -17,6 +17,14 @@
   float:left;
 }
 
-hr {
-	margin-bottom:0.5rem;
+div.hr-label {
+  position:relative;
+  margin-bottom:0.5rem;
+}
+div.hr-label > label {
+  margin: 0 0 0 10px;
+  position: absolute;
+  top: -0.8rem;
+  background: #fff;
+  padding: 0 8px;
 }
