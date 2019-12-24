@@ -19,12 +19,19 @@
 
 div.hr-label {
   position:relative;
-  margin-bottom:0.5rem;
+  margin: 2rem 0 0.5rem 0;
 }
 div.hr-label > label {
-  margin: 0 0 0 10px;
+  margin: 0 0 0 40px;
   position: absolute;
   top: -0.8rem;
   background: #fff;
-  padding: 0 8px;
+  padding: 0 8px 0 3px;
+}
+div.hr-label > a {
+  margin: 0 0 0 8px;
+  position: absolute;
+  top: -0.7rem;
+  background: #fff;
+  padding: 0 3px 0 8px;
 }

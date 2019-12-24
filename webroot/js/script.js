@@ -450,10 +450,13 @@ $(function() {
       console.log("x:" + e.pointer.x, "y:" + e.pointer.y);
     });
 
-    // 「このプログラムについて」の折りたたみ
-    $("#usage-collapse").on('show.bs.collapse', function(){
-        $("#usage-collapse-trigger").find("span.fa").addClass("fa-minus").removeClass("fa-plus");
-    }).on('hide.bs.collapse', function(){
-        $("#usage-collapse-trigger").find("span.fa").addClass("fa-plus").removeClass("fa-minus");
+    // bootstrap4 collapseの折りたたみ処理
+    $("#usage-collapse, #line-collapse, #rect-collapse, #action-collapse, #canvas-size-collapse").on('show.bs.collapse hide.bs.collapse', function(e){
+      let $target_collapse = $("#" + $(this).attr("id") + "-trigger");
+      if (e.type == 'show') {
+        $target_collapse.find("span.fa").addClass("fa-minus").removeClass("fa-plus");
+      } else if (e.type == 'hide') {
+        $target_collapse.find("span.fa").addClass("fa-plus").removeClass("fa-minus");
+      }
     });
 });
