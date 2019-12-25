@@ -4,7 +4,7 @@ $(function() {
     $('[data-toggle="tooltip"]').tooltip();
 
     // カラーピッカー設定
-    $("#color, #rect-line-color, #rect-fill-color").wheelColorPicker({
+    $("#color, #rect-line-color, #rect-fill-color, #text-color").wheelColorPicker({
       preview: true,
       autoResize: false,
       sliders: "vrgb",
@@ -13,6 +13,7 @@ $(function() {
     $("#color").val("000000").trigger('change');
     $("#rect-line-color").val("000000").trigger('change');
     $("#rect-fill-color").val("ffffff").trigger('change');
+    $("#text-color").val("000000").trigger('change');
 
     // キャンバス作成
     var canvas = new fabric.Canvas('layout-canvas');
@@ -131,6 +132,105 @@ $(function() {
       save();
     };
 
+    // テキスト追加
+    $("#add_text").on("click", function() {
+
+      var add_text = window.prompt("追加するテキストを入力してください。\n改行は「\\n」と入力してください", "");
+      if (add_text == null || add_text == '') {
+        if (add_text == '') {
+          alert("テキストを入力してください。");
+        }
+        return false;
+      }
+
+      var position_x = $("#text-position-x").val(),
+      position_y = $("#text-position-y").val(),
+      text_color = $("#text-color").val(),
+      text_font = $("#text-font").val(),
+      width = $("#text-width").val(),
+      height = $("#text-height").val(),
+      text_size = $("#text-size").val(),
+      text_position = $("#text-position").val(),
+      font_style_bold = $("#font-style-bold:checked").val(),
+      font_style_italic = $("#font-style-italic:checked").val(),
+      font_style_linethrough = $("#font-style-linethrough:checked").val(),
+      font_style_underline = $("#font-style-underline:checked").val();
+
+      let font_style_arr = [];
+      if (font_style_bold != undefined) {
+        font_style_arr.push(font_style_bold);
+      }
+      if (font_style_italic != undefined) {
+        font_style_arr.push(font_style_italic);
+      }
+      if (font_style_linethrough != undefined) {
+        font_style_arr.push(font_style_linethrough);
+      }
+      if (font_style_underline != undefined) {
+        font_style_arr.push(font_style_underline);
+      }
+
+      position_x = parseInt(position_x);
+      position_y = parseInt(position_y);
+      width = parseInt(width);
+      height = parseInt(height);
+
+      let text_position_arr = text_position.split('-'),
+      styles = {
+        color: text_color,
+        "font-family": [
+          text_font
+        ],
+        "font-size": text_size,
+        "font-style": font_style_arr,
+        "letter-spacing": "",
+        "line-height": "",
+        "line-height-ratio": "",
+        "text-align": text_position_arr[0],
+        "vertical-align": text_position_arr[1]
+      };
+
+      draw_text(add_text, position_x, position_y, width, height, styles);
+    });
+
+    // テキストを書く
+    var draw_text = function(text, x, y, w, h, other_props) {
+
+      var font_style_weight = ($.inArray('bold', other_props['font-style']) >= 0) ? "bold" : "",
+      font_style_italic = ($.inArray('italic', other_props['font-style']) >= 0) ? "italic" : "",
+      is_linethrough = ($.inArray('linethrough', other_props['font-style']) >= 0),
+      is_underline = ($.inArray('underline', other_props['font-style']) >= 0);
+      canvas.add(new fabric.Text(text.replace(/\\n/g, '\n'), {
+        left: x,
+        top: y,
+        fill: '#' + other_props.color.replace('#', ''),
+        fontSize: other_props['font-size'],
+        fontFamily: other_props['font-family'][0],
+        textAlign: other_props['text-align'],
+        fontWeight: font_style_weight,
+        fontStyle: font_style_italic,
+        underline: is_underline,
+        linethrough: is_linethrough,
+        thinreportSavedProps: {
+          verticalAlign: other_props['vertical-align'],
+          width: w,
+          height: h,
+          lineHeight: other_props['line-height'],
+          lineHeightRatio: other_props['line-height-ratio'],
+          letterSpacing: other_props['letter-spacing']
+        },
+        selectable: false,
+        lockMovementX: true,
+        lockMovementY: true,
+        lockRotation: true,
+        hasControls: false,
+        hasBorders: true,
+        hoverCursor: "inherit"
+      }));
+      canvas.renderAll();
+      save();
+    };
+
     // flf関連の変数とか
     var current_tlf_paper_type = "A4",
     current_tlf_orientation = "portrait",
@@ -179,10 +279,11 @@ $(function() {
 
         var push_data = null;
 
-        // 線と四角形で条件分岐する
+        // 線と四角形とテキストで条件分岐する
         if (item instanceof fabric.Rect) {
 
           let fill_color_prop = ("" == item.fill) ? "none" : item.fill;
+
           push_data = {
             "id": "",
             "type": "rect",
@@ -199,6 +300,48 @@ $(function() {
               "fill-color": fill_color_prop
             },
             "border-radius": 0
+          };
+
+        } else if (item instanceof fabric.Text) {
+
+          let texts = item.text.split('\n'),
+          font_style_arr = [];
+          if (item.fontWeight == 'bold') {
+            font_style_arr.push('bold');
+          }
+          if (item.fontStyle == 'italic') {
+            font_style_arr.push('italic');
+          }
+          if (item.linethrough == true) {
+            font_style_arr.push('linethrough');
+          }
+          if (item.underline == true) {
+            font_style_arr.push('underline');
+          }
+
+          push_data = {
+            "id": "",
+            "type": "text",
+            "display": true,
+            "description": "",
+            "x": item.left,
+            "y": item.top,
+            "width": item.thinreportSavedProps.width,
+            "height": item.thinreportSavedProps.height,
+            "style": {
+              "font-family": [
+                item.fontFamily
+              ],
+              "font-size": item.fontSize,
+              "color": item.fill,
+              "text-align": item.textAlign,
+              "vertical-align": item.thinreportSavedProps.verticalAlign,
+              "line-height": item.thinreportSavedProps.lineHeight,
+              "line-height-ratio": item.thinreportSavedProps.lineHeightRatio,
+              "letter-spacing": item.thinreportSavedProps.letterSpacing,
+              "font-style": font_style_arr
+            },
+            "texts": texts
           };
 
         } else {
@@ -338,6 +481,9 @@ $(function() {
             } else if (item.type === 'rect') {
               let fill_color_prop = (item.style['fill-color'] === "none") ? "" : item.style['fill-color'].replace('#', '');
               draw_rect(item.x, item.y, item.width, item.height, item.style['border-width'], item.style['border-color'].replace('#', ''), fill_color_prop);
+            } else if (item.type === 'text') {
+              let texts = item.texts.join('\n');
+              draw_text(texts, item.x, item.y, item.width, item.height, item.style);
             }
           }
 
@@ -443,15 +589,20 @@ $(function() {
       $("#position-y").val(e.pointer.y);
       $("#rect-position-x").val(e.pointer.x);
       $("#rect-position-y").val(e.pointer.y);
+      $("#text-position-x").val(e.pointer.x);
+      $("#text-position-y").val(e.pointer.y);
     });
 
-    // マウスオーバーの位置をとりあえずコンソールログに出しとく
+    // キャンバスをマウスオーバーしてる間、カーソルに追従してXY座標を出力する
     canvas.on('mouse:move', function(e){
-      console.log("x:" + e.pointer.x, "y:" + e.pointer.y);
+      $("#canvas-xy-disp").css({left: e.pointer.x + 22, top: e.pointer.y + 53});
+      $("#canvas-xy-disp").attr('title', "X:" + e.pointer.x + " Y:" + e.pointer.y).tooltip('_fixTitle').tooltip('show');
+    }).on('mouse:out', function(){
+      $("#canvas-xy-disp").tooltip('hide');
     });
 
     // bootstrap4 collapseの折りたたみ処理
-    $("#usage-collapse, #line-collapse, #rect-collapse, #action-collapse, #canvas-size-collapse").on('show.bs.collapse hide.bs.collapse', function(e){
+    $("#usage-collapse, #line-collapse, #rect-collapse, #text-collapse, #action-collapse, #canvas-size-collapse").on('show.bs.collapse hide.bs.collapse', function(e){
       let $target_collapse = $("#" + $(this).attr("id") + "-trigger");
       if (e.type == 'show') {
         $target_collapse.find("span.fa").addClass("fa-minus").removeClass("fa-plus");
@@ -459,4 +610,5 @@ $(function() {
         $target_collapse.find("span.fa").addClass("fa-plus").removeClass("fa-minus");
       }
     });
+
 });

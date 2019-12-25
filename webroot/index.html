@@ -13,194 +13,295 @@
   </head>
   <body>
     <div class="wrapper">
-      <div class="col-md-12 mb-12 pt-3 pb-3">
-        <div class="card">
-          <div class="card-body">
-            <div class="row">
-              <div class="canvas-div">
-                <label>Layout <span class="disp-paper-type">A4</span> at 72ppi (<span class="disp-width">595</span>px x <span class="disp-height">842</span>px, <span class="disp-orientation">portrait</span>)</label>
-                <div class="canvas-wrapper">
-                  <canvas id="layout-canvas"></canvas>
+      <div class="col-md-12 mb-12 pt-2 pb-2">
+        <div class="row">
+          <div class="canvas-div">
+            <label>Layout <span class="disp-paper-type">A4</span> at 72ppi (<span class="disp-width">595</span>px x <span class="disp-height">842</span>px, <span class="disp-orientation">portrait</span>)</label>
+            <div class="canvas-wrapper">
+              <canvas id="layout-canvas"></canvas>
+              <i id="canvas-xy-disp" data-toggle="tooltip" data-placement="right" title="X: Y:" data-animation="false" data-trigger="manual"></i>
+            </div>
+          </div>
+          <div class="main-div">
+            <div>
+              <h1 class="m-0 text-dark">Thinreports Line Maker</h1>
+              <a id="usage-collapse-trigger" data-toggle="collapse" href="#usage-collapse" role="button" aria-expanded="false" aria-controls="usage-collapse" style="font-size:80%;">[<span class="fa fa-plus" style="font-size:80%;"></span>] このプログラムについて</a>
+              <div class="collapse" id="usage-collapse">
+                <ul style="font-size:80%;">
+                  <li>Thinreportsで使用するtlfファイルを生成するプログラムです。</li>
+                  <li>0.10.0のエディタで使用可能なtlfを生成します。</li>
+                  <li>フルHDのディスプレイでフルスクリーンでの使用を推奨。</li>
+                  <li>帳票出力テンプレートを1から作る際、エディターで1本ずつ線を引くのが大変なときに使うと少しだけ早くできるかもしれない。</li>
+                  <li>UndoはCtrl+Z、RedoはCtrl+Yでも実行できます。</li>
+                  <li>Download tlfでtlfファイルをダウンロードします。Ctrl+Sでも実行できます。</li>
+                  <li>キャンバス内でダブルクリックすることでPositionX,PositionYに現在のポインターの位置をセットできます。</li>
+                </ul>
+              </div>
+              <div class="hr-label first-item">
+                <hr />
+                <a id="line-collapse-trigger" data-toggle="collapse" href="#line-collapse" role="button" aria-expanded="false" aria-controls="line-collapse" style="font-size:80%;">[<span class="fa fa-minus" style="font-size:80%;"></span>]</a>
+                <label>Line</label>
+              </div>
+              <div class="collapse show" id="line-collapse">
+                <div class="clearfix">
+                  <div>
+                    <div class="property-box">
+                      <label for="direction">Direction</label>
+                      <select class="form-control form-control-sm rounded-0" id="direction" data-toggle="tooltip" title="線の方向です">
+                        <option value="vertical">|（縦）</option>
+                        <option value="width">─（横）</option>
+                      </select>
+                    </div>
+                    <div class="property-box">
+                      <label for="length">Length(px)</label>
+                      <div class="input-group">
+                        <input type="number" class="form-control form-control-sm rounded-0" id="length" value="400" data-toggle="tooltip" title="線の長さです" />
+                      </div>
+                    </div>
+                    <div class="property-box">
+                      <label for="color">Color</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control form-control-sm rounded-0" id="color" data-toggle="tooltip" title="線の色です" />
+                      </div>
+                    </div>
+                    <div class="property-box">
+                      <label for="width">Width(px)</label>
+                      <div class="input-group">
+                        <input type="number" class="form-control form-control-sm rounded-0" id="width" value="1" data-toggle="tooltip" title="線の太さです" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="clearfix">
+                  <div>
+                    <div class="property-box">
+                      <label for="position-x">PositionX(px)</label>
+                      <div class="input-group">
+                        <input type="number" min="0" class="form-control form-control-sm rounded-0" id="position-x" value="50" data-toggle="tooltip" title="線を引き始めるX座標です" />
+                      </div>
+                    </div>
+                    <div class="property-box">
+                      <label for="position-y">PositionY(px)</label>
+                      <div class="input-group">
+                        <input type="number" min="0" class="form-control form-control-sm rounded-0" id="position-y" value="50" data-toggle="tooltip" title="線を引き始めるY座標です" />
+                      </div>
+                    </div>
+                    <div class="property-box">
+                      <label for="interval">Interval(px)</label>
+                      <div class="input-group">
+                        <input type="number" min="0" class="form-control form-control-sm rounded-0" id="interval" value="0" data-toggle="tooltip" title="指定した値で等間隔の線を引きます" />
+                      </div>
+                    </div>
+                    <div class="property-box">
+                      <label for="repeat">Repeat</label>
+                      <div class="input-group">
+                        <input type="number" min="0" class="form-control form-control-sm rounded-0" id="repeat" value="0" data-toggle="tooltip" title="等間隔の線を何本引くかを入力してください" />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="main-div">
-                <div>
-                  <h1 class="m-0 text-dark">Thinreports Line Maker</h1>
-                  <a id="usage-collapse-trigger" data-toggle="collapse" href="#usage-collapse" role="button" aria-expanded="false" aria-controls="usage-collapse" style="font-size:80%;">[<span class="fa fa-plus" style="font-size:80%;"></span>] このプログラムについて</a>
-                  <div class="collapse" id="usage-collapse">
-                    <ul style="font-size:80%;">
-                      <li>Thinreportsで使用するtlfファイルを生成するプログラムです。</li>
-                      <li>0.10.0のエディタで使用可能なtlfを生成します。</li>
-                      <li>フルHDのディスプレイでフルスクリーンでの使用を推奨。</li>
-                      <li>帳票出力テンプレートを1から作る際、エディターで1本ずつ線を引くのが大変なときに使うと少しだけ早くできるかもしれない。</li>
-                      <li>UndoはCtrl+Z、RedoはCtrl+Yでも実行できます。</li>
-                      <li>Download tlfでtlfファイルをダウンロードします。Ctrl+Sでも実行できます。</li>
-                      <li>キャンバス内でダブルクリックすることでPositionX,PositionYに現在のポインターの位置をセットできます。</li>
-                    </ul>
-                  </div>
-                  <div class="hr-label">
-                    <hr />
-                    <a id="line-collapse-trigger" data-toggle="collapse" href="#line-collapse" role="button" aria-expanded="false" aria-controls="line-collapse" style="font-size:80%;">[<span class="fa fa-minus" style="font-size:80%;"></span>]</a>
-                    <label>Line</label>
-                  </div>
-                  <div class="collapse show" id="line-collapse">
-                    <div class="clearfix">
-                      <div>
-                        <div class="property-box">
-                          <label for="direction">Direction</label>
-                          <select class="form-control form-control-sm  rounded-0 input_type" id="direction" data-toggle="tooltip" title="線の方向です">
-                            <option value="vertical">|（縦）</option>
-                            <option value="width">─（横）</option>
-                          </select>
-                        </div>
-                        <div class="property-box">
-                          <label for="length">Length(px)</label>
-                          <div class="input-group">
-                            <input type="number" class="form-control form-control-sm rounded-0" id="length" value="400" data-toggle="tooltip" title="線の長さです" />
-                          </div>
-                        </div>
-                        <div class="property-box">
-                          <label for="color">Color</label>
-                          <div class="input-group">
-                            <input type="text" class="form-control form-control-sm rounded-0" id="color" data-toggle="tooltip" title="線の色です" />
-                          </div>
-                        </div>
-                        <div class="property-box">
-                          <label for="width">Width(px)</label>
-                          <div class="input-group">
-                            <input type="number" class="form-control form-control-sm rounded-0" id="width" value="1" data-toggle="tooltip" title="線の太さです" />
-                          </div>
-                        </div>
+              <div class="hr-label">
+                <hr />
+                <a id="rect-collapse-trigger" data-toggle="collapse" href="#rect-collapse" role="button" aria-expanded="false" aria-controls="rect-collapse" style="font-size:80%;">[<span class="fa fa-minus" style="font-size:80%;"></span>]</a>
+                <label>Rect</label>
+              </div>
+              <div class="collapse show" id="rect-collapse">
+                <div class="clearfix">
+                  <div>
+                    <div class="property-box">
+                      <label for="rect-position-x">PositionX(px)</label>
+                      <div class="input-group">
+                        <input type="number" min="0" class="form-control form-control-sm rounded-0" id="rect-position-x" value="50" data-toggle="tooltip" title="四角形の左上のX座標です" />
                       </div>
                     </div>
-                    <div class="clearfix">
-                      <div>
-                        <div class="property-box">
-                          <label for="position-x">PositionX(px)</label>
-                          <div class="input-group">
-                            <input type="number" min="0" max="595" class="form-control form-control-sm rounded-0" id="position-x" value="50" data-toggle="tooltip" title="線を引き始めるX座標です" />
-                          </div>
-                        </div>
-                        <div class="property-box">
-                          <label for="position-y">PositionY(px)</label>
-                          <div class="input-group">
-                            <input type="number" min="0" max="842" class="form-control form-control-sm rounded-0" id="position-y" value="50" data-toggle="tooltip" title="線を引き始めるY座標です" />
-                          </div>
-                        </div>
-                        <div class="property-box">
-                          <label for="interval">Interval(px)</label>
-                          <div class="input-group">
-                            <input type="number" min="0" max="200" class="form-control form-control-sm rounded-0" id="interval" value="0" data-toggle="tooltip" title="指定した値で等間隔の線を引きます" />
-                          </div>
-                        </div>
-                        <div class="property-box">
-                          <label for="repeat">Repeat</label>
-                          <div class="input-group">
-                            <input type="number" min="0" max="50" class="form-control form-control-sm rounded-0" id="repeat" value="0" data-toggle="tooltip" title="等間隔の線を何本引くかを入力してください" />
-                          </div>
-                        </div>
+                    <div class="property-box">
+                      <label for="rect-position-y">PositionY(px)</label>
+                      <div class="input-group">
+                        <input type="number" min="0" class="form-control form-control-sm rounded-0" id="rect-position-y" value="50" data-toggle="tooltip" title="四角形の左上のY座標です" />
+                      </div>
+                    </div>
+                    <div class="property-box">
+                      <label for="rect-line-color">LineColor</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control form-control-sm rounded-0" id="rect-line-color" data-toggle="tooltip" title="四角形の線の色です" />
+                      </div>
+                    </div>
+                    <div class="property-box">
+                      <label for="rect-fill-color">FillColor</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control form-control-sm rounded-0" id="rect-fill-color" data-toggle="tooltip" title="四角形の内側の色です。未入力のとき透明扱いとします。" />
                       </div>
                     </div>
                   </div>
-                  <div class="hr-label">
-                    <hr />
-                    <a id="rect-collapse-trigger" data-toggle="collapse" href="#rect-collapse" role="button" aria-expanded="false" aria-controls="rect-collapse" style="font-size:80%;">[<span class="fa fa-minus" style="font-size:80%;"></span>]</a>
-                    <label>Rect</label>
-                  </div>
-                  <div class="collapse show" id="rect-collapse">
-                    <div class="clearfix">
-                      <div>
-                        <div class="property-box">
-                          <label for="rect-position-x">PositionX(px)</label>
-                          <div class="input-group">
-                            <input type="number" min="0" max="595" class="form-control form-control-sm rounded-0" id="rect-position-x" value="50" data-toggle="tooltip" title="四角形の左上のX座標です" />
-                          </div>
-                        </div>
-                        <div class="property-box">
-                          <label for="rect-position-y">PositionY(px)</label>
-                          <div class="input-group">
-                            <input type="number" min="0" max="842" class="form-control form-control-sm rounded-0" id="rect-position-y" value="50" data-toggle="tooltip" title="四角形の左上のY座標です" />
-                          </div>
-                        </div>
-                        <div class="property-box">
-                          <label for="color">LineColor</label>
-                          <div class="input-group">
-                            <input type="text" class="form-control form-control-sm rounded-0" id="rect-line-color" data-toggle="tooltip" title="四角形の線の色です" />
-                          </div>
-                        </div>
-                        <div class="property-box">
-                          <label for="color">FillColor</label>
-                          <div class="input-group">
-                            <input type="text" class="form-control form-control-sm rounded-0" id="rect-fill-color" data-toggle="tooltip" title="四角形の内側の色です。未入力のとき透明扱いとします。" />
-                          </div>
-                        </div>
+                </div>
+                <div class="clearfix">
+                  <div>
+                    <div class="property-box">
+                      <label for="rect-width">Width(px)</label>
+                      <div class="input-group">
+                        <input type="number" class="form-control form-control-sm rounded-0" id="rect-width" value="100" data-toggle="tooltip" title="四角形の横幅です" />
                       </div>
                     </div>
-                    <div class="clearfix">
-                      <div>
-                        <div class="property-box">
-                          <label for="width">Width(px)</label>
-                          <div class="input-group">
-                            <input type="number" class="form-control form-control-sm rounded-0" id="rect-width" value="100" data-toggle="tooltip" title="四角形の横幅です" />
-                          </div>
-                        </div>
-                        <div class="property-box">
-                          <label for="width">Height(px)</label>
-                          <div class="input-group">
-                            <input type="number" class="form-control form-control-sm rounded-0" id="rect-height" value="100" data-toggle="tooltip" title="四角形の縦幅です" />
-                          </div>
-                        </div>
-                        <div class="property-box">
-                          <label for="width">LineWidth(px)</label>
-                          <div class="input-group">
-                            <input type="number" class="form-control form-control-sm rounded-0" id="rect-line-width" value="1" data-toggle="tooltip" title="四角形の線の太さです" />
-                          </div>
-                        </div>
+                    <div class="property-box">
+                      <label for="rect-height">Height(px)</label>
+                      <div class="input-group">
+                        <input type="number" class="form-control form-control-sm rounded-0" id="rect-height" value="100" data-toggle="tooltip" title="四角形の縦幅です" />
+                      </div>
+                    </div>
+                    <div class="property-box">
+                      <label for="rect-line-width">LineWidth(px)</label>
+                      <div class="input-group">
+                        <input type="number" class="form-control form-control-sm rounded-0" id="rect-line-width" value="1" data-toggle="tooltip" title="四角形の線の太さです" />
                       </div>
                     </div>
                   </div>
-                  <div class="hr-label">
-                    <hr />
-                    <a id="action-collapse-trigger" data-toggle="collapse" href="#action-collapse" role="button" aria-expanded="false" aria-controls="action-collapse" style="font-size:80%;">[<span class="fa fa-minus" style="font-size:80%;"></span>]</a>
-                    <label>Action</label>
+                </div>
+              </div>
+              <div class="hr-label">
+                <hr />
+                <a id="text-collapse-trigger" data-toggle="collapse" href="#text-collapse" role="button" aria-expanded="false" aria-controls="text-collapse" style="font-size:80%;">[<span class="fa fa-minus" style="font-size:80%;"></span>]</a>
+                <label>Text</label>
+              </div>
+              <div class="collapse show" id="text-collapse">
+                <div class="clearfix">
+                  <div>
+                    <div class="property-box">
+                      <label for="text-position-x">PositionX(px)</label>
+                      <div class="input-group">
+                        <input type="number" min="0" class="form-control form-control-sm rounded-0" id="text-position-x" value="200" data-toggle="tooltip" title="テキストの左上のX座標です" />
+                      </div>
+                    </div>
+                    <div class="property-box">
+                      <label for="text-position-y">PositionY(px)</label>
+                      <div class="input-group">
+                        <input type="number" min="0" class="form-control form-control-sm rounded-0" id="text-position-y" value="20" data-toggle="tooltip" title="テキストの左上のY座標です" />
+                      </div>
+                    </div>
+                    <div class="property-box">
+                      <label for="text-color">TextColor</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control form-control-sm rounded-0" id="text-color" data-toggle="tooltip" title="テキストの色です" />
+                      </div>
+                    </div>
+                    <div class="property-box">
+                      <label for="text-font">TextFont</label>
+                      <!-- ここでoptionタグ内のテキストに対して対象のフォントを適用することでttfファイルのロードを済ませておく -->
+                      <select class="form-control form-control-sm rounded-0" id="text-font" data-toggle="tooltip" title="テキストフォントの種類です">
+                        <option value="Helvetica" style="font-family: Helvetica" selected>Helvetica</option>
+                        <option value="Courier New" style="font-family: Courier New">Courier New</option>
+                        <option value="Times New Roman" style="font-family: Times New Roman">Times New Roman</option>
+                        <option value="IPAMincho" style="font-family: IPAMincho">IPA 明朝</option>
+                        <option value="IPAPMincho" style="font-family: IPAPMincho">IPA P明朝</option>
+                        <option value="IPAGothic" style="font-family: IPAGothic">IPA ゴシック</option>
+                        <option value="IPAPGothic" style="font-family: IPAPGothic">IPA Pゴシック</option>
+                      </select>
+                    </div>
                   </div>
-                  <div class="collapse show" id="action-collapse">
-                    <div class="clearfix">
-                      <div>
-                        <button id="add_line" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　Add Line　</button>
-                        <button id="add_rect" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　Add Rect　</button>
-                        <button id="undo" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button" disabled>　Undo　</button>
-                        <button id="redo" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button" disabled>　Redo　</button>
+                </div>
+                <div class="clearfix">
+                  <div>
+                    <div class="property-box">
+                      <label for="text-width">Width(px)</label>
+                      <div class="input-group">
+                        <input type="number" class="form-control form-control-sm rounded-0" id="text-width" value="200" data-toggle="tooltip" title="テキストの横幅です" />
                       </div>
                     </div>
-                    <div class="clearfix mt-1">
-                      <div>
-                        <button id="load_tlf" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　Load tlf　</button>
-                        <input type="file" name="load_tlf_file" id="load_tlf_file" style="display:none;"/>
-                        <button id="download_tlf" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　Download tlf　</button>
+                    <div class="property-box">
+                      <label for="text-height">Height(px)</label>
+                      <div class="input-group">
+                        <input type="number" class="form-control form-control-sm rounded-0" id="text-height" value="30" data-toggle="tooltip" title="テキストの縦幅です" />
+                      </div>
+                    </div>
+                    <div class="property-box">
+                      <label for="text-size">Size(px)</label>
+                      <div class="input-group">
+                        <input type="number" class="form-control form-control-sm rounded-0" id="text-size" value="18" data-toggle="tooltip" title="テキストのフォントサイズです" />
+                      </div>
+                    </div>
+                    <div class="property-box">
+                      <label for="text-position">TextPosition</label>
+                      <select class="form-control form-control-sm rounded-0" id="text-position" data-toggle="tooltip" title="テキスト整列位置です">
+                        <option value="left-top" selected>X:左 Y:上</option>
+                        <option value="left-middle">X:左 Y:中</option>
+                        <option value="left-bottom">X:左 Y:下</option>
+                        <option value="center-top">X:中 Y:上</option>
+                        <option value="center-middle">X:中 Y:中</option>
+                        <option value="center-bottom">X:中 Y:下</option>
+                        <option value="right-top">X:右 Y:上</option>
+                        <option value="right-middle">X:右 Y:中</option>
+                        <option value="right-bottom">X:右 Y:下</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="clearfix">
+                  <div>
+                    <div class="property-box">
+                      <label for="font-style">FontStyle</label>
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons" id="font-style">
+                        <label class="btn btn-flat btn-sm btn-outline-secondary rounded-0" data-toggle="tooltip" title="テキストを太字にする">
+                          <input type="checkbox" id="font-style-bold" value="bold" autocomplete="off"><span style="font-weight:bold;">B</span>
+                        </label>
+                        <label class="btn btn-flat btn-sm btn-outline-secondary rounded-0" data-toggle="tooltip" title="テキストをイタリックにする">
+                          <input type="checkbox" id="font-style-italic" value="italic" autocomplete="off"><span style="font-style:italic;">I</span>
+                        </label>
+                        <label class="btn btn-flat btn-sm btn-outline-secondary rounded-0" data-toggle="tooltip" title="テキストに打消し線を引く">
+                          <input type="checkbox" id="font-style-linethrough" value="linethrough" autocomplete="off"><span style="text-decoration: line-through;">S</span>
+                        </label>
+                        <label class="btn btn-flat btn-sm btn-outline-secondary rounded-0" data-toggle="tooltip" title="テキストに下線を引く">
+                          <input type="checkbox" id="font-style-underline" value="underline" autocomplete="off"><span style="text-decoration: underline;">U</span>
+                        </label>
                       </div>
                     </div>
                   </div>
-                  <div class="hr-label">
-                    <hr />
-                    <a id="canvas-size-collapse-trigger" data-toggle="collapse" href="#canvas-size-collapse" role="button" aria-expanded="false" aria-controls="canvas-size-collapse" style="font-size:80%;">[<span class="fa fa-minus" style="font-size:80%;"></span>]</a>
-                    <label>CanvasSize</label>
+                </div>
+              </div>
+              <div class="hr-label">
+                <hr />
+                <a id="action-collapse-trigger" data-toggle="collapse" href="#action-collapse" role="button" aria-expanded="false" aria-controls="action-collapse" style="font-size:80%;">[<span class="fa fa-minus" style="font-size:80%;"></span>]</a>
+                <label>Action</label>
+              </div>
+              <div class="collapse show" id="action-collapse">
+                <div class="clearfix">
+                  <div>
+                    <button id="add_line" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　Add Line　</button>
+                    <button id="add_rect" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　Add Rect　</button>
+                    <button id="add_text" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　Add Text　</button>
                   </div>
-                  <div class="collapse show" id="canvas-size-collapse">
-                    <div class="clearfix">
-                      <div>
-                        <button class="btn btn-flat btn-sm btn-outline-secondary rounded-0 canvas-size default-canvas-size" type="button" data-canvas-size="a4">　A4　</button>
-                        <button class="btn btn-flat btn-sm btn-outline-secondary rounded-0 canvas-size" type="button" data-canvas-size="a3">　A3　</button>
-                        <button class="btn btn-flat btn-sm btn-outline-secondary rounded-0 canvas-size" type="button" data-canvas-size="b5">　B5　</button>
-                        <button class="btn btn-flat btn-sm btn-outline-secondary rounded-0 canvas-size" type="button" data-canvas-size="b4">　B4　</button>
-                        <button class="btn btn-flat btn-sm btn-outline-secondary rounded-0 free-canvas-size" type="button" data-canvas-size="b5">　Free　</button>
-                      </div>
-                    </div>
-                    <div class="clearfix mt-1">
-                      <div>
-                        <button class="btn btn-flat btn-sm btn-outline-secondary rounded-0 toggle-canvas-orientation" type="button" data-canvas-size="a4">　Toggle XY　</button>
-                      </div>
-                    </div>
+                </div>
+                <div class="clearfix mt-1">
+                  <div>
+                    <button id="undo" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button" disabled>　Undo　</button>
+                    <button id="redo" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button" disabled>　Redo　</button>
+                  </div>
+                </div>
+                <div class="clearfix mt-1">
+                  <div>
+                    <button id="load_tlf" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　Load tlf　</button>
+                    <input type="file" name="load_tlf_file" id="load_tlf_file" style="display:none;"/>
+                    <button id="download_tlf" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　Download tlf　</button>
+                  </div>
+                </div>
+              </div>
+              <div class="hr-label">
+                <hr />
+                <a id="canvas-size-collapse-trigger" data-toggle="collapse" href="#canvas-size-collapse" role="button" aria-expanded="false" aria-controls="canvas-size-collapse" style="font-size:80%;">[<span class="fa fa-minus" style="font-size:80%;"></span>]</a>
+                <label>CanvasSize</label>
+              </div>
+              <div class="collapse show" id="canvas-size-collapse">
+                <div class="clearfix">
+                  <div>
+                    <button class="btn btn-flat btn-sm btn-outline-secondary rounded-0 canvas-size default-canvas-size" type="button" data-canvas-size="a4">　A4　</button>
+                    <button class="btn btn-flat btn-sm btn-outline-secondary rounded-0 canvas-size" type="button" data-canvas-size="a3">　A3　</button>
+                    <button class="btn btn-flat btn-sm btn-outline-secondary rounded-0 canvas-size" type="button" data-canvas-size="b5">　B5　</button>
+                    <button class="btn btn-flat btn-sm btn-outline-secondary rounded-0 canvas-size" type="button" data-canvas-size="b4">　B4　</button>
+                    <button class="btn btn-flat btn-sm btn-outline-secondary rounded-0 free-canvas-size" type="button" data-canvas-size="b5">　Free　</button>
+                  </div>
+                </div>
+                <div class="clearfix mt-1">
+                  <div>
+                    <button class="btn btn-flat btn-sm btn-outline-secondary rounded-0 toggle-canvas-orientation" type="button" data-canvas-size="a4">　Toggle XY　</button>
                   </div>
                 </div>
               </div>

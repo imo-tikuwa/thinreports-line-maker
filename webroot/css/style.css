@@ -1,3 +1,24 @@
+@font-face {
+  font-family: 'IPAMincho';
+  src: url('/fonts/IPAfont00303/ipam.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'IPAPMincho';
+  src: url('/fonts/IPAfont00303/ipamp.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'IPAGothic';
+  src: url('/fonts/IPAfont00303/ipag.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'IPAPGothic';
+  src: url('/fonts/IPAfont00303/ipagp.ttf') format('truetype');
+}
+
+h1 {
+  font-size:2rem !important;
+}
+
 .canvas-wrapper {
   border:1px solid rgba(0,0,0,.125);
 }
@@ -6,7 +27,7 @@
   height: 200px;
 }
 .canvas-div {
-  margin-right:10px;
+  margin: 0 10px;
 }
 .main-div {
   max-width: 450px;
@@ -21,6 +42,9 @@ div.hr-label {
   position:relative;
   margin: 2rem 0 0.5rem 0;
 }
+div.hr-label.first-item {
+  margin-top:0;
+}
 div.hr-label > label {
   margin: 0 0 0 40px;
   position: absolute;
@@ -34,4 +58,13 @@ div.hr-label > a {
   top: -0.7rem;
   background: #fff;
   padding: 0 3px 0 8px;
+}
+
+#font-style label {
+  width:26px;
+  text-align: center;
+}
+
+#canvas-xy-disp {
+  position: absolute;
 }
