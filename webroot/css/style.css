@@ -41,6 +41,7 @@ h1 {
 div.hr-label {
   position:relative;
   margin: 2rem 0 0.5rem 0;
+  width: 440px;
 }
 div.hr-label.first-item {
   margin-top:0;
@@ -59,6 +60,13 @@ div.hr-label > a {
   background: #fff;
   padding: 0 3px 0 8px;
 }
+div.hr-label > button {
+  margin: 0 0 0 220px;
+  position: absolute;
+  top: -0.8rem;
+  background: #fff;
+  padding: 2px 8px;
+}
 
 #font-style label {
   width:26px;
@@ -67,4 +75,10 @@ div.hr-label > a {
 
 #canvas-xy-disp {
   position: absolute;
+}
+
+#add_line,
+#add_rect,
+#add_text {
+	width: 102px;
 }
