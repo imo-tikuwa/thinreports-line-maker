@@ -1,18 +1,18 @@
 @font-face {
   font-family: 'IPAMincho';
-  src: url('/fonts/IPAfont00303/ipam.ttf') format('truetype');
+  src: url('../fonts/IPAfont00303/ipam.ttf') format('truetype');
 }
 @font-face {
   font-family: 'IPAPMincho';
-  src: url('/fonts/IPAfont00303/ipamp.ttf') format('truetype');
+  src: url('../fonts/IPAfont00303/ipamp.ttf') format('truetype');
 }
 @font-face {
   font-family: 'IPAGothic';
-  src: url('/fonts/IPAfont00303/ipag.ttf') format('truetype');
+  src: url('../fonts/IPAfont00303/ipag.ttf') format('truetype');
 }
 @font-face {
   font-family: 'IPAPGothic';
-  src: url('/fonts/IPAfont00303/ipagp.ttf') format('truetype');
+  src: url('../fonts/IPAfont00303/ipagp.ttf') format('truetype');
 }
 
 h1 {

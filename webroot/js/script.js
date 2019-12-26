@@ -200,7 +200,8 @@ $(function() {
       font_style_italic = ($.inArray('italic', other_props['font-style']) >= 0) ? "italic" : "",
       is_linethrough = ($.inArray('linethrough', other_props['font-style']) >= 0),
       is_underline = ($.inArray('underline', other_props['font-style']) >= 0);
-      canvas.add(new fabric.Text(text.replace(/\\n/g, '\n'), {
+
+      let canvas_text = new fabric.Text(text.replace(/\\n/g, '\n'), {
         left: x,
         top: y,
         fill: '#' + other_props.color.replace('#', ''),
@@ -211,14 +212,7 @@ $(function() {
         fontStyle: font_style_italic,
         underline: is_underline,
         linethrough: is_linethrough,
-        thinreportSavedProps: {
-          verticalAlign: other_props['vertical-align'],
-          width: w,
-          height: h,
-          lineHeight: other_props['line-height'],
-          lineHeightRatio: other_props['line-height-ratio'],
-          letterSpacing: other_props['letter-spacing']
-        },
+
         selectable: false,
         lockMovementX: true,
         lockMovementY: true,
@@ -226,7 +220,28 @@ $(function() {
         hasControls: false,
         hasBorders: true,
         hoverCursor: "inherit"
-      }));
+      });
+
+      // FabricJs側で使えないプロパティをthinreportSavedPropsという名前で保持しておくためにfabric.Textにプロパティを追加する
+      // https://stackoverflow.com/questions/38008915/how-to-add-name-to-fabricjs-object
+      // http://fabricjs.com/fabric-intro-part-3
+      canvas_text.toObject = (function(toObject) {
+        return function() {
+          return fabric.util.object.extend(toObject.call(this), {
+            thinreportSavedProps: this.thinreportSavedProps
+          });
+        };
+      })(canvas_text.toObject);
+      canvas_text.thinreportSavedProps = {
+        verticalAlign: other_props['vertical-align'],
+        width: w,
+        height: h,
+        lineHeight: other_props['line-height'],
+        lineHeightRatio: other_props['line-height-ratio'],
+        letterSpacing: other_props['letter-spacing']
+      };
+
+      canvas.add(canvas_text);
       canvas.renderAll();
       save();
     };
