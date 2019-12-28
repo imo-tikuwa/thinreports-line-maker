@@ -162,23 +162,23 @@
               </div>
               <div class="hr-label">
                 <hr />
-                <a id="text-collapse-trigger" data-toggle="collapse" href="#text-collapse" role="button" aria-expanded="false" aria-controls="text-collapse" style="font-size:80%;">[<span class="fa fa-minus" style="font-size:80%;"></span>]</a>
+                <a id="text-collapse-trigger" data-toggle="collapse" href="#text-collapse" role="button" aria-expanded="false" aria-controls="text-collapse" style="font-size:80%;">[<span class="fa fa-plus" style="font-size:80%;"></span>]</a>
                 <label>Text</label>
                 <button id="add_text" class="btn btn-flat btn-sm btn-outline-secondary rounded-0" type="button">　Add Text　</button>
               </div>
-              <div class="collapse show" id="text-collapse">
+              <div class="collapse" id="text-collapse">
                 <div class="clearfix">
                   <div>
                     <div class="property-box">
                       <label for="text-position-x">PositionX(px)</label>
                       <div class="input-group">
-                        <input type="number" min="0" class="form-control form-control-sm rounded-0" id="text-position-x" value="200" data-toggle="tooltip" title="テキストの左上のX座標です" />
+                        <input type="number" min="0" class="form-control form-control-sm rounded-0" id="text-position-x" value="50" data-toggle="tooltip" title="テキストの左上のX座標です" />
                       </div>
                     </div>
                     <div class="property-box">
                       <label for="text-position-y">PositionY(px)</label>
                       <div class="input-group">
-                        <input type="number" min="0" class="form-control form-control-sm rounded-0" id="text-position-y" value="20" data-toggle="tooltip" title="テキストの左上のY座標です" />
+                        <input type="number" min="0" class="form-control form-control-sm rounded-0" id="text-position-y" value="50" data-toggle="tooltip" title="テキストの左上のY座標です" />
                       </div>
                     </div>
                     <div class="property-box">
@@ -282,10 +282,10 @@
               </div>
               <div class="hr-label">
                 <hr />
-                <a id="canvas-size-collapse-trigger" data-toggle="collapse" href="#canvas-size-collapse" role="button" aria-expanded="false" aria-controls="canvas-size-collapse" style="font-size:80%;">[<span class="fa fa-minus" style="font-size:80%;"></span>]</a>
+                <a id="canvas-size-collapse-trigger" data-toggle="collapse" href="#canvas-size-collapse" role="button" aria-expanded="false" aria-controls="canvas-size-collapse" style="font-size:80%;">[<span class="fa fa-plus" style="font-size:80%;"></span>]</a>
                 <label>CanvasSize</label>
               </div>
-              <div class="collapse show" id="canvas-size-collapse">
+              <div class="collapse" id="canvas-size-collapse">
                 <div class="clearfix">
                   <div>
                     <button class="btn btn-flat btn-sm btn-outline-secondary rounded-0 canvas-size default-canvas-size" type="button" data-canvas-size="a4">　A4　</button>
@@ -298,6 +298,41 @@
                 <div class="clearfix mt-1">
                   <div>
                     <button class="btn btn-flat btn-sm btn-outline-secondary rounded-0 toggle-canvas-orientation" type="button" data-canvas-size="a4">　Toggle XY　</button>
+                  </div>
+                </div>
+              </div>
+              <div class="hr-label">
+                <hr />
+                <a id="margin-collapse-trigger" data-toggle="collapse" href="#margin-collapse" role="button" aria-expanded="false" aria-controls="margin-collapse" style="font-size:80%;">[<span class="fa fa-plus" style="font-size:80%;"></span>]</a>
+                <label>Margin</label>
+              </div>
+              <div class="collapse" id="margin-collapse">
+                <div class="clearfix">
+                  <div>
+                    <div class="property-box">
+                      <label for="margin-top">Top(px)</label>
+                      <div class="input-group">
+                        <input type="number" min="0" class="form-control form-control-sm rounded-0" id="margin-top" value="20" data-toggle="tooltip" title="キャンバスのマージン（上）" />
+                      </div>
+                    </div>
+                    <div class="property-box">
+                      <label for="margin-right">Right(px)</label>
+                      <div class="input-group">
+                        <input type="number" min="0" class="form-control form-control-sm rounded-0" id="margin-right" value="20" data-toggle="tooltip" title="キャンバスのマージン（右）" />
+                      </div>
+                    </div>
+                    <div class="property-box">
+                      <label for="margin-bottom">Bottom(px)</label>
+                      <div class="input-group">
+                        <input type="number" min="0" class="form-control form-control-sm rounded-0" id="margin-bottom" value="20" data-toggle="tooltip" title="キャンバスのマージン（下）" />
+                      </div>
+                    </div>
+                    <div class="property-box">
+                      <label for="margin-left">Left(px)</label>
+                      <div class="input-group">
+                        <input type="number" min="0" class="form-control form-control-sm rounded-0" id="margin-left" value="20" data-toggle="tooltip" title="キャンバスのマージン（左）" />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

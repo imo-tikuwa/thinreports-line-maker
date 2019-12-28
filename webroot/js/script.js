@@ -24,6 +24,20 @@ $(function() {
     canvas.setWidth(595);
     canvas.setHeight(842);
 
+    // Canvasのオブジェクトをid指定で取得する
+    // https://stackoverflow.com/questions/32931236/how-to-remove-fabric-js-object-with-custom-id
+    fabric.Canvas.prototype.getItemByAttr = function(attr, name) {
+      var object = null,
+      objects = this.getObjects();
+      for (var i = 0, len = this.size(); i < len; i++) {
+        if (objects[i][attr] && objects[i][attr] === name) {
+          object = objects[i];
+          break;
+        }
+      }
+      return object;
+    };
+
     // メモリを使いすぎないようにというFabricjsの処理？によって線がぼやけてしまう。objectCacheオプションをfalseにし、以下のcanvasサイズに関する設定を変更
     // see https://stackoverflow.com/questions/47513180/fabricjs-lines-in-group-become-blurry
     fabric.perfLimitSizeTotal = 225000000;
@@ -77,7 +91,7 @@ $(function() {
 
     // 線を書く
     var draw_line = function(x1, y1, x2, y2, color, width) {
-      canvas.add(new fabric.Line([x1, y1, x2, y2], {
+      let canvas_line = new fabric.Line([x1, y1, x2, y2], {
         left: x1,
         top: y1,
         stroke: '#' + color,
@@ -86,7 +100,9 @@ $(function() {
         evented: false,
         objectCaching: false,
         hoverCursor: "inherit"
-      }));
+      });
+
+      canvas.add(canvas_line);
       canvas.renderAll();
       save();
     };
@@ -255,12 +271,7 @@ $(function() {
       report: {
         ["paper-type"]: current_tlf_paper_type,
         orientation: current_tlf_orientation,
-        margin: [
-          20,
-          20,
-          20,
-          20
-        ]
+        margin: []
       }
     };
 
@@ -268,11 +279,26 @@ $(function() {
     // tlfファイルダウンロード
     $("#download_tlf").on("click", function(){
 
+      let current_margin_top = $("#margin-top").val(),
+      current_margin_right = $("#margin-right").val(),
+      current_margin_bottom = $("#margin-bottom").val(),
+      current_margin_left = $("#margin-left").val();
+
+      current_margin_top = parseInt(current_margin_top);
+      current_margin_right = parseInt(current_margin_right);
+      current_margin_bottom = parseInt(current_margin_bottom);
+      current_margin_left = parseInt(current_margin_left);
+
       var download_filename = new Date().getTime();
       tlf_config.items = [];
       tlf_config.title = download_filename;
       tlf_config.report.orientation = current_tlf_orientation;
       tlf_config.report['paper-type'] = current_tlf_paper_type;
+      tlf_config.report.margin = [];
+      tlf_config.report.margin.push(current_margin_top);
+      tlf_config.report.margin.push(current_margin_right);
+      tlf_config.report.margin.push(current_margin_bottom);
+      tlf_config.report.margin.push(current_margin_left);
       if (current_tlf_size_is_free) {
         if (current_tlf_orientation === "portrait") {
           tlf_config.report.width = parseInt(canvas.getWidth());
@@ -286,6 +312,11 @@ $(function() {
         delete tlf_config.report.height;
       }
       canvas.getObjects().map(function(item, index){
+
+        // マージン線はtlfファイルに出力しないのでスキップ
+        if (is_margin_object(item)) {
+          return;
+        }
 
         var push_data = null;
 
@@ -432,6 +463,7 @@ $(function() {
 
       canvas.loadFromJSON(tmp_state, function() {
         canvas.renderAll();
+        draw_margin_line();
         on.prop('disabled', false);
         if (playStack.length) {
           off.prop('disabled', false);
@@ -507,6 +539,13 @@ $(function() {
               draw_text(texts, item.x, item.y, item.width, item.height, item.style);
             }
           }
+
+          // マージン線を再描画
+          $("#margin-top").val();
+          $("#margin-right").val();
+          $("#margin-bottom").val();
+          $("#margin-left").val();
+          draw_margin_line();
 
           state = null;
           undo = [];
@@ -623,7 +662,7 @@ $(function() {
     });
 
     // bootstrap4 collapseの折りたたみ処理
-    $("#usage-collapse, #line-collapse, #rect-collapse, #text-collapse, #action-collapse, #canvas-size-collapse").on('show.bs.collapse hide.bs.collapse', function(e){
+    $("#usage-collapse, #line-collapse, #rect-collapse, #text-collapse, #action-collapse, #canvas-size-collapse, #margin-collapse").on('show.bs.collapse hide.bs.collapse', function(e){
       let $target_collapse = $("#" + $(this).attr("id") + "-trigger");
       if (e.type == 'show') {
         $target_collapse.find("span.fa").addClass("fa-minus").removeClass("fa-plus");
@@ -632,4 +671,92 @@ $(function() {
       }
     });
 
+    // マージン描画
+    var draw_margin_line = function() {
+
+      let current_width = parseInt(canvas.getWidth()),
+      current_height = parseInt(canvas.getHeight()),
+      current_margin_top = $("#margin-top").val(),
+      current_margin_right = $("#margin-right").val(),
+      current_margin_bottom = $("#margin-bottom").val(),
+      current_margin_left = $("#margin-left").val();
+
+      current_margin_top = parseInt(current_margin_top);
+      current_margin_right = parseInt(current_margin_right);
+      current_margin_bottom = parseInt(current_margin_bottom);
+      current_margin_left = parseInt(current_margin_left);
+
+      let margins = {
+        top: {
+          x1: 0,
+          y1: current_margin_top,
+          x2: current_width,
+          y2: current_margin_top
+        },
+        right: {
+          x1: current_width - current_margin_right,
+          y1: 0,
+          x2: current_width - current_margin_right,
+          y2: current_height
+        },
+        bottom: {
+          x1: 0,
+          y1: current_height - current_margin_bottom,
+          x2: current_width,
+          y2: current_height - current_margin_bottom
+        },
+        left: {
+          x1: current_margin_left,
+          y1: 0,
+          x2: current_margin_left,
+          y2: current_height
+        }
+      };
+
+      // 既存のマージン線を消して新規でマージン線を追加
+      canvas.getObjects().map(function(canvas_item, canvas_item_index){
+        if (is_margin_object(canvas_item)) {
+          canvas.remove(canvas_item);
+        }
+      });
+      for(let margin_target in margins) {
+        let margin_data = margins[margin_target];
+        let canvas_margin_line = new fabric.Line([margin_data.x1, margin_data.y1, margin_data.x2, margin_data.y2], {
+          left: margin_data.x1,
+          top: margin_data.y1,
+          stroke: '#eee',
+          strokeWidth: 2,
+          selectable: false,
+          evented: false,
+          objectCaching: false,
+          hoverCursor: "inherit"
+        });
+
+        canvas_margin_line.toObject = (function(toObject) {
+          return function() {
+            return fabric.util.object.extend(toObject.call(this), {
+              margin_id: this.margin_id
+            });
+          };
+        })(canvas_margin_line.toObject);
+        canvas_margin_line.margin_id = margin_target;
+
+        canvas.add(canvas_margin_line);
+        canvas.sendToBack(canvas_margin_line);
+      }
+      canvas.renderAll();
+    };
+
+    // キャンバス内の線オブジェクトがマージン線か判定
+    var is_margin_object = function(canvas_item) {
+      return (canvas_item.margin_id != null && canvas_item.margin_id != '' && $.inArray(canvas_item.margin_id, ['top', 'right', 'bottom', 'left']) >= 0);
+    };
+
+    // ページ読み込み時にマージン線を描画
+    draw_margin_line();
+
+    // マージンの設定値を変更したら再描画
+    $("#margin-top, #margin-right, #margin-bottom, #margin-left").on('change', function(e){
+      draw_margin_line();
+    });
 });
