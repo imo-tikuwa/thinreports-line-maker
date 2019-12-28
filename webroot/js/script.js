@@ -24,6 +24,11 @@ $(function() {
     canvas.setWidth(595);
     canvas.setHeight(842);
 
+    // メモリを使いすぎないようにというFabricjsの処理？によって線がぼやけてしまう。objectCacheオプションをfalseにし、以下のcanvasサイズに関する設定を変更
+    // see https://stackoverflow.com/questions/47513180/fabricjs-lines-in-group-become-blurry
+    fabric.perfLimitSizeTotal = 225000000;
+    fabric.maxCacheSideLimit = 5000;
+
     // 線追加
     $("#add_line").on("click", function() {
 
@@ -78,11 +83,8 @@ $(function() {
         stroke: '#' + color,
         strokeWidth: width,
         selectable: false,
-        lockMovementX: true,
-        lockMovementY: true,
-        lockRotation: true,
-        hasControls: false,
-        hasBorders: true,
+        evented: false,
+        objectCaching: false,
         hoverCursor: "inherit"
       }));
       canvas.renderAll();
@@ -121,11 +123,8 @@ $(function() {
         stroke: '#' + line_color,
         strokeWidth: line_width,
         selectable: false,
-        lockMovementX: true,
-        lockMovementY: true,
-        lockRotation: true,
-        hasControls: false,
-        hasBorders: true,
+        evented: false,
+        objectCaching: false,
         hoverCursor: "inherit"
       }));
       canvas.renderAll();
@@ -212,13 +211,9 @@ $(function() {
         fontStyle: font_style_italic,
         underline: is_underline,
         linethrough: is_linethrough,
-
         selectable: false,
-        lockMovementX: true,
-        lockMovementY: true,
-        lockRotation: true,
-        hasControls: false,
-        hasBorders: true,
+        evented: false,
+        objectCaching: false,
         hoverCursor: "inherit"
       });
 
@@ -424,7 +419,18 @@ $(function() {
       on.prop('disabled', true);
       off.prop('disabled', true);
       canvas.clear();
-      canvas.loadFromJSON(state, function() {
+
+      // たまにselectableとかその辺のプロパティが消失してることがあるのでここで固定でセットしておく
+      let tmp_state = JSON.parse(state);
+      tmp_state.objects.map(function(item, index){
+        item.selectable = false;
+        item.evented = false;
+        item.objectCaching = false;
+        item.hoverCursor = "inherit";
+      });
+      tmp_state = JSON.stringify(tmp_state);
+
+      canvas.loadFromJSON(tmp_state, function() {
         canvas.renderAll();
         on.prop('disabled', false);
         if (playStack.length) {
