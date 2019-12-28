@@ -541,10 +541,10 @@ $(function() {
           }
 
           // マージン線を再描画
-          $("#margin-top").val();
-          $("#margin-right").val();
-          $("#margin-bottom").val();
-          $("#margin-left").val();
+          $("#margin-top").val(tlf_file_data.report.margin[0]);
+          $("#margin-right").val(tlf_file_data.report.margin[1]);
+          $("#margin-bottom").val(tlf_file_data.report.margin[2]);
+          $("#margin-left").val(tlf_file_data.report.margin[3]);
           draw_margin_line();
 
           state = null;
