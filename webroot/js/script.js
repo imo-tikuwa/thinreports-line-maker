@@ -52,6 +52,7 @@ $(function() {
       width = $("#width").val(),
       position_x = $("#position-x").val(),
       position_y = $("#position-y").val(),
+      line_type = $("#line-type").val(),
       interval = $("#interval").val(),
       repeat = $("#repeat").val();
 
@@ -75,7 +76,7 @@ $(function() {
 
       if (interval > 0 &&  repeat > 0) {
         for (var i = 0; i <= repeat; i++) {
-          draw_line(x1, y1, x2, y2, color, width);
+          draw_line(x1, y1, x2, y2, color, width, line_type);
           if ('vertical' === direction) {
             x1 += interval;
             x2 += interval;
@@ -85,12 +86,12 @@ $(function() {
           }
         }
       } else {
-        draw_line(x1, y1, x2, y2, color, width);
+        draw_line(x1, y1, x2, y2, color, width, line_type);
       }
     });
 
     // 線を書く
-    var draw_line = function(x1, y1, x2, y2, color, width) {
+    var draw_line = function(x1, y1, x2, y2, color, width, line_type) {
       let canvas_line = new fabric.Line([x1, y1, x2, y2], {
         left: x1,
         top: y1,
@@ -101,6 +102,11 @@ $(function() {
         objectCaching: false,
         hoverCursor: "inherit"
       });
+      if (line_type == 'dashed') {
+        canvas_line.strokeDashArray = [2, 2];
+      } else if (line_type == 'dotted') {
+        canvas_line.strokeDashArray = [1, 1];
+      }
 
       canvas.add(canvas_line);
       canvas.renderAll();
@@ -275,6 +281,18 @@ $(function() {
       }
     };
 
+    // 線の種類を取得する
+    var get_border_style = function(strokeDashArray) {
+      let border_style = "solid";
+      if (strokeDashArray != undefined) {
+        if (strokeDashArray[0] == 2 && strokeDashArray[1] == 2) {
+          border_style = "dashed";
+        } else if (strokeDashArray[0] == 1 && strokeDashArray[1] == 1) {
+          border_style = "dotted";
+        }
+      }
+      return border_style;
+    };
 
     // tlfファイルダウンロード
     $("#download_tlf").on("click", function(){
@@ -395,7 +413,7 @@ $(function() {
             "style": {
               "border-color": item.stroke,
               "border-width": item.strokeWidth,
-              "border-style": "solid",
+              "border-style": get_border_style(item.strokeDashArray)
             }
           };
 
@@ -424,7 +442,7 @@ $(function() {
       download_link.download = download_filename + '.tlf';
       download_link.href = tlf_blob;
       download_link.dataset.downloadurl = ["text/plain", download_link.download, download_link.href].join(":");
-      download_link.click();
+//      download_link.click();
     });
 
 
