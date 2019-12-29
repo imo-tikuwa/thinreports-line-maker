@@ -122,7 +122,8 @@ $(function() {
       fill_color = $("#rect-fill-color").val(),
       width = $("#rect-width").val(),
       height = $("#rect-height").val(),
-      line_width = $("#rect-line-width").val();
+      line_width = $("#rect-line-width").val(),
+      line_type = $("#rect-line-type").val();
 
       position_x = parseInt(position_x);
       position_y = parseInt(position_y);
@@ -130,13 +131,13 @@ $(function() {
       height = parseInt(height);
       line_width = parseInt(line_width);
 
-      draw_rect(position_x, position_y, width, height, line_width, line_color, fill_color);
+      draw_rect(position_x, position_y, width, height, line_width, line_color, fill_color, line_type);
     });
 
     // 四角形を書く
-    var draw_rect = function(x, y, w, h, line_width, line_color, fill_color) {
+    var draw_rect = function(x, y, w, h, line_width, line_color, fill_color, line_type) {
       let fill_color_prop = (fill_color != "") ? '#' + fill_color : "";
-      canvas.add(new fabric.Rect({
+      let canvas_rect = new fabric.Rect({
         left: x,
         top: y,
         width: w,
@@ -148,7 +149,14 @@ $(function() {
         evented: false,
         objectCaching: false,
         hoverCursor: "inherit"
-      }));
+      });
+      if (line_type == 'dashed') {
+        canvas_rect.strokeDashArray = [2, 2];
+      } else if (line_type == 'dotted') {
+        canvas_rect.strokeDashArray = [1, 1];
+      }
+
+      canvas.add(canvas_rect);
       canvas.renderAll();
       save();
     };
@@ -355,7 +363,7 @@ $(function() {
             "style": {
               "border-color": item.stroke,
               "border-width": item.strokeWidth,
-              "border-style": "solid",
+              "border-style": get_border_style(item.strokeDashArray),
               "fill-color": fill_color_prop
             },
             "border-radius": 0
@@ -548,10 +556,10 @@ $(function() {
           for (var i = 0; i < tlf_file_data.items.length; i++) {
             var item = tlf_file_data.items[i];
             if (item.type === 'line') {
-              draw_line(item.x1, item.y1, item.x2, item.y2, item.style['border-color'].replace('#', ''), item.style['border-width']);
+              draw_line(item.x1, item.y1, item.x2, item.y2, item.style['border-color'].replace('#', ''), item.style['border-width'], item.style['border-style']);
             } else if (item.type === 'rect') {
               let fill_color_prop = (item.style['fill-color'] === "none") ? "" : item.style['fill-color'].replace('#', '');
-              draw_rect(item.x, item.y, item.width, item.height, item.style['border-width'], item.style['border-color'].replace('#', ''), fill_color_prop);
+              draw_rect(item.x, item.y, item.width, item.height, item.style['border-width'], item.style['border-color'].replace('#', ''), fill_color_prop, item.style['border-style']);
             } else if (item.type === 'text') {
               let texts = item.texts.join('\n');
               draw_text(texts, item.x, item.y, item.width, item.height, item.style);
@@ -663,18 +671,22 @@ $(function() {
       canvas.isDrawingMode = true;
     });
     canvas.on('mouse:dblclick', function(e){
-      $("#position-x").val(e.pointer.x);
-      $("#position-y").val(e.pointer.y);
-      $("#rect-position-x").val(e.pointer.x);
-      $("#rect-position-y").val(e.pointer.y);
-      $("#text-position-x").val(e.pointer.x);
-      $("#text-position-y").val(e.pointer.y);
+      var canvas_pointer_x = parseInt(e.pointer.x),
+      canvas_pointer_y = parseInt(e.pointer.y);
+      $("#position-x").val(canvas_pointer_x);
+      $("#position-y").val(canvas_pointer_y);
+      $("#rect-position-x").val(canvas_pointer_x);
+      $("#rect-position-y").val(canvas_pointer_y);
+      $("#text-position-x").val(canvas_pointer_x);
+      $("#text-position-y").val(canvas_pointer_y);
     });
 
     // キャンバスをマウスオーバーしてる間、カーソルに追従してXY座標を出力する
     canvas.on('mouse:move', function(e){
-      $("#canvas-xy-disp").css({left: e.pointer.x + 22, top: e.pointer.y + 53});
-      $("#canvas-xy-disp").attr('title', "X:" + e.pointer.x + " Y:" + e.pointer.y).tooltip('_fixTitle').tooltip('show');
+      var canvas_pointer_x = parseInt(e.pointer.x),
+      canvas_pointer_y = parseInt(e.pointer.y);
+      $("#canvas-xy-disp").css({left: canvas_pointer_x + 22, top: canvas_pointer_y + 53});
+      $("#canvas-xy-disp").attr('title', "X:" + canvas_pointer_x + " Y:" + canvas_pointer_y).tooltip('_fixTitle').tooltip('show');
     }).on('mouse:out', function(){
       $("#canvas-xy-disp").tooltip('hide');
     });
