@@ -622,8 +622,8 @@ $(function() {
       current_tlf_paper_type = change_size.tlf_type;
       current_tlf_size_is_free = false;
       update_disp();
+      draw_margin_line();
     });
-    $(".default-canvas-size").trigger('click');
 
     // キャンバスサイズ（フリーサイズ）の処理
     $(".free-canvas-size").on("click", function(){
@@ -642,6 +642,7 @@ $(function() {
       current_tlf_paper_type = "user";
       current_tlf_size_is_free = true;
       update_disp();
+      draw_margin_line();
     });
 
     // キャンバスの縦横入れ替え処理
@@ -651,6 +652,7 @@ $(function() {
       canvas.setWidth(tmp_canvas_height);
       canvas.setHeight(tmp_canvas_width);
       update_disp();
+      draw_margin_line();
     });
 
     // ラベル表示更新
@@ -782,11 +784,11 @@ $(function() {
       return (canvas_item.margin_id != null && canvas_item.margin_id != '' && $.inArray(canvas_item.margin_id, ['top', 'right', 'bottom', 'left']) >= 0);
     };
 
-    // ページ読み込み時にマージン線を描画
-    draw_margin_line();
-
     // マージンの設定値を変更したら再描画
     $("#margin-top, #margin-right, #margin-bottom, #margin-left").on('change', function(e){
       draw_margin_line();
     });
+
+    // ページ読み込み時にA4サイズのキャンバスを読み込み
+    $(".default-canvas-size").trigger('click');
 });
