@@ -4,10 +4,22 @@ thinreportsで使用するtlfファイルを作成するツールです。
 ![thinreports_line_maker_03](https://user-images.githubusercontent.com/48991931/71476562-01f7ab00-2829-11ea-8726-8dc1ba57b68a.png)
 
 ## 使い方
-1. git cloneする
-2. npm ciする
-3. phpのビルトインサーバーを起動する(start.bat or start_wifi.batを実行)  
-うまくいかない場合はwebrootディレクトリに移動したコマンドプロンプト上で`php -S localhost:80`とかで起動してください。
+server_ruby.batで起動する場合
+```
+git clone https://github.com/imo-tikuwa/thinreports-line-maker.git
+cd thinreports-line-maker
+bundle install --path vendor/bundle
+cd public
+npm ci
+```
+
+server_php.bat、server_npm.batで起動する場合  
+※PDF形式のダウンロードは使えません  
+```
+git clone https://github.com/imo-tikuwa/thinreports-line-maker.git
+cd thinreports-line-maker/public
+npm ci
+```
 
 ## 不具合
 テキスト項目はたまにfabric.Textに埋めた独自プロパティが消失して保存ボタンクリック時にエラーが発生してしまいます。  
