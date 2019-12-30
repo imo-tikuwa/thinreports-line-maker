@@ -450,7 +450,7 @@ $(function() {
       download_link.download = download_filename + '.tlf';
       download_link.href = tlf_blob;
       download_link.dataset.downloadurl = ["text/plain", download_link.download, download_link.href].join(":");
-//      download_link.click();
+      download_link.click();
     });
 
 
