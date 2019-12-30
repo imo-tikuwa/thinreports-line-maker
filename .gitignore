@@ -1,4 +1,4 @@
-/vendor/
-/logs/*
-!/logs/.gitkeep
 /public/node_modules/*
+/vendor/
+/output/*.pdf
+/output/*.tlf

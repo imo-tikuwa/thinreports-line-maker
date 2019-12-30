@@ -304,7 +304,21 @@ $(function() {
 
     // tlfファイルダウンロード
     $("#download_tlf").on("click", function(){
+      var download_filename = new Date().getTime();
+      var tlf_json = get_tlf_json(download_filename);
+      var tlf_blob = window.URL.createObjectURL(new Blob([tlf_json], {type: 'text/plain'}));
+      var download_link = document.createElement("a");
+      download_link.download = download_filename + '.tlf';
+      download_link.href = tlf_blob;
+      download_link.dataset.downloadurl = ["text/plain", download_link.download, download_link.href].join(":");
+      download_link.click();
+    });
 
+    // tlfファイルデータを返す
+    var get_tlf_json = function(download_filename = null) {
+      if (download_filename == null) {
+        download_filename = new Date().getTime();
+      }
       let current_margin_top = $("#margin-top").val(),
       current_margin_right = $("#margin-right").val(),
       current_margin_bottom = $("#margin-bottom").val(),
@@ -315,7 +329,6 @@ $(function() {
       current_margin_bottom = parseInt(current_margin_bottom);
       current_margin_left = parseInt(current_margin_left);
 
-      var download_filename = new Date().getTime();
       tlf_config.items = [];
       tlf_config.title = download_filename;
       tlf_config.report.orientation = current_tlf_orientation;
@@ -444,15 +457,8 @@ $(function() {
         tlf_config.items.push(push_data);
       });
 
-      var tlf_json = JSON.stringify(tlf_config, null, 2);
-      var tlf_blob = window.URL.createObjectURL(new Blob([tlf_json], {type: 'text/plain'}));
-      var download_link = document.createElement("a");
-      download_link.download = download_filename + '.tlf';
-      download_link.href = tlf_blob;
-      download_link.dataset.downloadurl = ["text/plain", download_link.download, download_link.href].join(":");
-      download_link.click();
-    });
-
+      return JSON.stringify(tlf_config, null, 2);
+    };
 
     // see https://stackoverflow.com/questions/19043219/undo-redo-feature-in-fabric-js
     var state;
@@ -791,4 +797,34 @@ $(function() {
 
     // ページ読み込み時にA4サイズのキャンバスを読み込み
     $(".default-canvas-size").trigger('click');
+
+    // rubyが稼働しているときのみthinreportsを利用したPDFのダウンロードを行うボタンを表示
+    $.ajax({
+      url:'/is-ruby-running',
+      type:'GET',
+      dataType: 'text',
+      success: function(data, status, xhr) {
+        if (xhr.status === 200 && data == 'ruby_is_running.') {
+          $("#download_pdf").show();
+
+          // PDFダウンロード処理
+          $("#download_pdf").on('click', function(){
+            let tlf_json = get_tlf_json();
+            $.ajax({
+              type: 'POST',
+              dataType: 'text',
+              url: '/save_tlf',
+              data: {
+                tlf_data: tlf_json
+              },
+              success: function(tlf_name, status2, xhr2){
+                if (xhr2.status === 200) {
+                  window.location.href = '/download_pdf?tlf_name=' + tlf_name
+                }
+              },
+            });
+          });
+        }
+      }
+    });
 });
