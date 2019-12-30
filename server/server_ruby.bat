@@ -1,5 +1,5 @@
 @echo off
 
 cd /D %~dp0
-cd ..\webroot
+cd ..\public
 ruby -run -e httpd . -p 80 &

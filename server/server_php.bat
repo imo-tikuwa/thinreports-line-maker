@@ -1,5 +1,5 @@
 @echo off
 
 cd /D %~dp0
-cd ..\webroot
+cd ..\public
 start php -S 0.0.0.0:80
