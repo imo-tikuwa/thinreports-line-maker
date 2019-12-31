@@ -1,3 +1,33 @@
+"use strict";
+
+// Webフォント読み込み（Textのオプションが初期表示で折りたたまれたことが原因で、フォントのローディングが行われていなかったためWebFontLoaderというライブラリを使用）
+// https://github.com/typekit/webfontloader
+// http://cly7796.net/wp/javascript/load-web-fonts-with-webfontloader/
+WebFont.load({
+  custom: {
+    families: ['IPAMincho', 'IPAPMincho', 'IPAGothic', 'IPAPGothic'],
+    urls: ['../css/style.css']
+  },
+  loading: function() {
+    console.log('loading');
+  },
+  active: function() {
+    console.log('active');
+  },
+  inactive: function() {
+    console.log('inactive');
+  },
+  fontloading: function(familyName, fvd) {
+    console.log('fontloading', familyName, fvd);
+  },
+  fontactive: function(familyName, fvd) {
+    console.log('fontactive', familyName, fvd);
+  },
+  fontinactive: function(familyName, fvd) {
+    console.log('fontinactive', familyName, fvd);
+  }
+});
+
 $(function() {
 
     // bootstrap4 ツールチップ設定
