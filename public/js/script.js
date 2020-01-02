@@ -501,7 +501,7 @@ $(function() {
       undo.push(state);
       $('#undo').prop('disabled', false);
     }
-    state = JSON.stringify(canvas);
+    state = JSON.stringify(canvas.toJSON());
   }
 
   function replay(playStack, saveStack, buttonsOn, buttonsOff) {
@@ -524,6 +524,15 @@ $(function() {
     tmp_state = JSON.stringify(tmp_state);
 
     canvas.loadFromJSON(tmp_state, function() {
+
+      // どのタイミングで消えるかわからないのでとりあえずここでロードした際のテキストオブジェクトをすべて調べる
+      // テキスト1追加→テキスト2追加→Undo→テキスト3追加→Undo→Redoで100%再現する模様
+      canvas.getObjects().map(function(canvas_load_item, canvas_load_item_index){
+        if (canvas_load_item.type == 'text' && canvas_load_item.thinreportSavedProps == undefined) {
+          console.error("thinreportSavedProps disappeared!");
+        }
+      });
+
       canvas.renderAll();
       draw_margin_line();
       on.prop('disabled', false);
