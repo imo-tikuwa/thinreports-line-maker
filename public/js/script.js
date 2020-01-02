@@ -140,7 +140,6 @@ $(function() {
 
     canvas.add(canvas_line);
     canvas.renderAll();
-    save();
   };
 
   // 四角形追加
@@ -188,7 +187,6 @@ $(function() {
 
     canvas.add(canvas_rect);
     canvas.renderAll();
-    save();
   };
 
   // テキスト追加
@@ -298,7 +296,6 @@ $(function() {
 
     canvas.add(canvas_text);
     canvas.renderAll();
-    save();
   };
 
   // flf関連の変数とか
@@ -490,69 +487,50 @@ $(function() {
     return JSON.stringify(tlf_config, null, 2);
   };
 
-  // see https://stackoverflow.com/questions/19043219/undo-redo-feature-in-fabric-js
-  var state;
-  var undo = [];
-  var redo = [];
-  function save() {
-    redo = [];
-    $('#redo').prop('disabled', true);
-    if (state) {
-      undo.push(state);
-      $('#undo').prop('disabled', false);
+  // Undo/Redo処理
+  // https://codepen.io/Jadev/pen/mLNzmB
+  var is_redoing = false;
+  var history = [];
+  canvas.on('object:added',function(e) {
+    reflash_undo_btn();
+    if (!is_redoing) {
+      history = [];
+      reflash_redo_btn();
     }
-    state = JSON.stringify(canvas.toJSON());
-  }
-
-  function replay(playStack, saveStack, buttonsOn, buttonsOff) {
-    saveStack.push(state);
-    state = playStack.pop();
-    var on = $(buttonsOn);
-    var off = $(buttonsOff);
-    on.prop('disabled', true);
-    off.prop('disabled', true);
-    canvas.clear();
-
-    // たまにselectableとかその辺のプロパティが消失してることがあるのでここで固定でセットしておく
-    let tmp_state = JSON.parse(state);
-    tmp_state.objects.map(function(item, index){
-      item.selectable = false;
-      item.evented = false;
-      item.objectCaching = false;
-      item.hoverCursor = "inherit";
-    });
-    tmp_state = JSON.stringify(tmp_state);
-
-    canvas.loadFromJSON(tmp_state, function() {
-
-      // どのタイミングで消えるかわからないのでとりあえずここでロードした際のテキストオブジェクトをすべて調べる
-      // テキスト1追加→テキスト2追加→Undo→テキスト3追加→Undo→Redoで100%再現する模様
-      canvas.getObjects().map(function(canvas_load_item, canvas_load_item_index){
-        if (canvas_load_item.type == 'text' && canvas_load_item.thinreportSavedProps == undefined) {
-          console.error("thinreportSavedProps disappeared!");
-        }
-      });
-
-      canvas.renderAll();
-      draw_margin_line();
-      on.prop('disabled', false);
-      if (playStack.length) {
-        off.prop('disabled', false);
-      }
-    });
-  }
-
-  save();
-  canvas.on('object:modified', function() {
-    save();
+    is_redoing = false;
   });
-
   $('#undo').on('click', function() {
-    replay(undo, redo, '#redo', this);
+    if (canvas._objects.length > 0) {
+      history.push(canvas._objects.pop());
+      canvas.renderAll();
+      reflash_undo_btn();
+      reflash_redo_btn();
+    }
   });
   $('#redo').on('click', function() {
-    replay(redo, undo, '#undo', this);
+    if (history.length > 0) {
+      is_redoing = true;
+      canvas.add(history.pop());
+      reflash_redo_btn();
+    }
   });
+  // Undoボタンの最新化
+  // 4本のマージン線以外はUndo可能
+  function reflash_undo_btn() {
+    if (canvas._objects.length > 4) {
+      $('#undo').prop('disabled', false);
+    } else {
+      $('#undo').prop('disabled', true)
+    }
+  }
+  // Redoボタンの最新化
+  function reflash_redo_btn() {
+    if (history.length > 0) {
+      $('#redo').prop('disabled', false);
+    } else {
+      $('#redo').prop('disabled', true)
+    }
+  }
 
 
   $(window).keydown(function(e){
@@ -618,11 +596,9 @@ $(function() {
         $("#margin-left").val(tlf_file_data.report.margin[3]);
         draw_margin_line();
 
-        state = null;
-        undo = [];
-        redo = [];
-        save();
-        $('#undo').prop('disabled', true);
+        history = [];
+        reflash_undo_btn();
+        reflash_redo_btn();
       });
 
     });
