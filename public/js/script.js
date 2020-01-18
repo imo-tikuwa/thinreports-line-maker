@@ -831,7 +831,7 @@ $(function() {
 
   // rubyが稼働しているときのみthinreportsを利用したPDFのダウンロードを行うボタンを表示
   $.ajax({
-    url:'/is-ruby-running',
+    url:'./is-ruby-running',
     type:'GET',
     dataType: 'text',
     success: function(data, status, xhr) {
@@ -845,7 +845,7 @@ $(function() {
           tlf_input = document.createElement('input'),
           download_form_id = 'form' + new Date().getTime();
           download_form.id = download_form_id;
-          download_form.action = '/download_pdf';
+          download_form.action = './download_pdf';
           download_form.method = 'post';
           tlf_input.name = 'tlf_data';
           tlf_input.value = tlf_json;
