@@ -331,21 +331,18 @@ $(function() {
 
   // tlfファイルダウンロード
   $("#download_tlf").on("click", function(){
-    var download_filename = new Date().getTime();
-    var tlf_json = get_tlf_json(download_filename);
+    var download_filename = (tlf_file_name_stash == "") ? new Date().getTime() + '.tlf' : tlf_file_name_stash;
+    var tlf_json = get_tlf_json();
     var tlf_blob = window.URL.createObjectURL(new Blob([tlf_json], {type: 'text/plain'}));
     var download_link = document.createElement("a");
-    download_link.download = download_filename + '.tlf';
+    download_link.download = download_filename;
     download_link.href = tlf_blob;
     download_link.dataset.downloadurl = ["text/plain", download_link.download, download_link.href].join(":");
     download_link.click();
   });
 
   // tlfファイルデータを返す
-  var get_tlf_json = function(download_filename = null) {
-    if (download_filename == null) {
-      download_filename = new Date().getTime();
-    }
+  var get_tlf_json = function() {
     let current_margin_top = $("#margin-top").val(),
     current_margin_right = $("#margin-right").val(),
     current_margin_bottom = $("#margin-bottom").val(),
@@ -357,7 +354,7 @@ $(function() {
     current_margin_left = parseInt(current_margin_left);
 
     tlf_config.items = [];
-    tlf_config.title = download_filename;
+    tlf_config.title = tlf_page_title_stash;
     tlf_config.report.orientation = current_tlf_orientation;
     tlf_config.report['paper-type'] = current_tlf_paper_type;
     tlf_config.report.margin = [];
@@ -561,7 +558,7 @@ $(function() {
   });
 
   // tlfスタッシュ
-  var tlf_other_type_stash = [];
+  var tlf_other_type_stash = [], tlf_page_title_stash = "", tlf_file_name_stash = "";
 
   // tlfファイルロード
   if (window.File && window.FileReader && window.FileList && window.Blob) {
@@ -579,12 +576,18 @@ $(function() {
         return false;
       }
 
+      // スタッシュの初期化
+      tlf_file_name_stash = tlf_file_name;
+      tlf_page_title_stash = "";
       tlf_other_type_stash = [];
 
       var reader = new FileReader();
       reader.readAsText(tlf_file);
       reader.addEventListener('load', function() {
+
         var tlf_file_data = JSON.parse(reader.result);
+        tlf_page_title_stash = tlf_file_data.title;
+
         canvas.clear();
         for (var i = 0; i < tlf_file_data.items.length; i++) {
           var item = tlf_file_data.items[i];
