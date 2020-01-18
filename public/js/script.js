@@ -841,19 +841,18 @@ $(function() {
         // PDFダウンロード処理
         $("#download_pdf").on('click', function(){
           let tlf_json = get_tlf_json();
-          $.ajax({
-            type: 'POST',
-            dataType: 'text',
-            url: '/save_tlf',
-            data: {
-              tlf_data: tlf_json
-            },
-            success: function(tlf_name, status2, xhr2){
-              if (xhr2.status === 200) {
-                window.location.href = '/download_pdf?tlf_name=' + tlf_name
-              }
-            },
-          });
+          let download_form = document.createElement('form'),
+          tlf_input = document.createElement('input'),
+          download_form_id = 'form' + new Date().getTime();
+          download_form.id = download_form_id;
+          download_form.action = '/download_pdf';
+          download_form.method = 'post';
+          tlf_input.name = 'tlf_data';
+          tlf_input.value = tlf_json;
+          download_form.appendChild(tlf_input);
+          document.body.appendChild(download_form);
+          download_form.submit();
+          $('#' + download_form_id).remove();
         });
       }
     }

@@ -1,4 +1,4 @@
 /public/node_modules/*
 /vendor/
-/output/*.pdf
-/output/*.tlf
+/tmp/*.pdf
+/tmp/*.tlf
