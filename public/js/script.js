@@ -484,6 +484,11 @@ $(function() {
       tlf_config.items.push(push_data);
     });
 
+    // tlfファイルをロードしたときのスタッシュ配列を追加する
+    if (tlf_other_type_stash != null && tlf_other_type_stash.length > 0) {
+      tlf_config.items = tlf_config.items.concat(tlf_other_type_stash)
+    }
+
     return JSON.stringify(tlf_config, null, 2);
   };
 
@@ -555,6 +560,9 @@ $(function() {
     }
   });
 
+  // tlfスタッシュ
+  var tlf_other_type_stash = [];
+
   // tlfファイルロード
   if (window.File && window.FileReader && window.FileList && window.Blob) {
     $("#load_tlf").on("click", function(){
@@ -571,6 +579,8 @@ $(function() {
         return false;
       }
 
+      tlf_other_type_stash = [];
+
       var reader = new FileReader();
       reader.readAsText(tlf_file);
       reader.addEventListener('load', function() {
@@ -586,6 +596,9 @@ $(function() {
           } else if (item.type === 'text') {
             let texts = item.texts.join('\n');
             draw_text(texts, item.x, item.y, item.width, item.height, item.style);
+          } else {
+            // 線、四角形、テキスト以外のタイプの項目が合ったときスタッシュし、保存の時などに戻す（順番は元のデータと変わる）
+            tlf_other_type_stash.push(item);
           }
         }
 
