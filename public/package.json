@@ -16,7 +16,7 @@
     "bootstrap": "^4.4.1",
     "fabric": "^3.5.1",
     "http-server": "^0.12.0",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "jquery-wheelcolorpicker": "^3.0.9",
     "webfontloader": "^1.6.28"
   }
